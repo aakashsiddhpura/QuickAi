@@ -1,0 +1,12 @@
+-keep class  us.zoom.** { *; }
+-keep class  com.zipow.** { *; }
+-keep class  us.zipow.** { *; }
+-keep class  org.webrtc.** { *; }
+-keep class  us.google.protobuf.** { *; }
+-keep class  org.apache.** { *; }
+-keep class  org.igniterealtime.** { *; }
+-keep class  com.amazonaws.** { *; }
+-keep class  com.aldiferdiyan.** { *; }
+-keep class  org.jivesoftware.** { *; }
+  -dontwarn us.zoom.**
+  -dontwarn com.zipow.**
