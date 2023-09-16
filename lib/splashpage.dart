@@ -6,6 +6,7 @@ import 'package:fl_app/res/assets_path.dart';
 import 'package:fl_app/utils/navigation_utils/navigation.dart';
 import 'package:fl_app/utils/navigation_utils/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'utils/size_utils.dart';
@@ -30,26 +31,36 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
-      body: SafeArea(
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            // Container(
-            //   decoration: const BoxDecoration(
-            //     image: DecorationImage(image: AssetImage(AssetsPath.spalshS), fit: BoxFit.cover),
-            //   ),
-            // ),
-            Positioned(
-              bottom: SizeUtils.verticalBlockSize * 8,
-              child: Center(
-                child: LoadingAnimationWidget.fourRotatingDots(
-                  color: Colors.black,
-                  size: 70,
-                ),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Container(
+            width: double.infinity,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment(0.21, -0.98),
+                end: Alignment(-0.21, 0.98),
+                colors: [Color(0x7F7268EE), Color(0x000E094E)],
               ),
             ),
-          ],
-        ),
+            child: Image.asset(
+              AssetsPath.splashBg,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned(
+            bottom: SizeUtils.verticalBlockSize * 8,
+            child: Center(
+              child: LoadingAnimationWidget.discreteCircle(
+                color: AppColor.white,
+                secondRingColor: AppColor.secondaryClr,
+                thirdRingColor: AppColor.primaryClr,
+                size: 50,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -65,7 +76,7 @@ class _SplashPageState extends State<SplashPage> {
       // } else if (AdConstants.adsModel.showScreen?.b3 == true) {
       //   Navigation.replaceAll(Routes.continuePage);
       // } else {
-      //   Navigation.replaceAll(Routes.homePage);
+      Navigation.replaceAll(Routes.kIntroScreen);
       // }
     });
   }

@@ -1,4 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:fl_app/res/app_colors.dart';
+import 'package:fl_app/res/assets_path.dart';
 import 'package:fl_app/utils/app_binding.dart';
 import 'package:fl_app/utils/my_behavior.dart';
 import 'package:fl_app/utils/navigation_utils/routes.dart';
@@ -23,7 +25,7 @@ class _MyHomeState extends State<MyHome> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarColor: AppColor.backgroundColor,
     ));
     SystemChrome.setPreferredOrientations(
       [
@@ -35,11 +37,15 @@ class _MyHomeState extends State<MyHome> {
       debugShowCheckedModeBanner: false,
       initialBinding: AppBinding(),
       theme: ThemeData(
+        primaryColor: AppColor.primaryClr,
         brightness: Brightness.light,
         highlightColor: Colors.transparent,
-        splashColor: Colors.transparent,
         disabledColor: Colors.transparent,
-        // fontFamily: AssetsPath.robotoFonts,
+        splashColor: AppColor.primaryClr,
+        hoverColor: AppColor.primaryClr,
+        backgroundColor: AppColor.backgroundColor,
+        scaffoldBackgroundColor: AppColor.backgroundColor,
+        fontFamily: AssetsPath.fontFamily,
       ),
       initialRoute: Routes.splashPage,
       getPages: Routes.routes,

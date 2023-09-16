@@ -50,8 +50,9 @@ dependencies:
   app_settings: ^5.0.0
   flutter_easyloading: ^3.0.5
   google_mobile_ads: ^3.0.0
-
-
+  flutter_svg: ^1.1.6
+  dots_indicator: 3.0.0
+  circle_nav_bar: ^2.0.1+1
 #  custom_info_window: ^1.0.1
 
 
@@ -79,9 +80,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-#  assets:
-#    - assets/icons/
-#    - assets/
+  assets:
+    - assets/
+    - assets/icons/
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
@@ -93,10 +95,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: Satoshi
+      fonts:
+        - asset: assets/fonts/Satoshi-Regular.otf
+        - asset: assets/fonts/Satoshi-Medium.otf
+        - asset: assets/fonts/Satoshi-Bold.otf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
