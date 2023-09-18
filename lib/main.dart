@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
@@ -7,7 +8,7 @@ import 'my_home.dart';
 
 int appVersion = 0;
 var platform = const MethodChannel('ads');
-
+final box = GetStorage();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
@@ -19,5 +20,6 @@ Future<void> main() async {
   OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
     print("Accepted permission: $accepted");
   });
+  await GetStorage.init();
   runApp(MyHome());
 }

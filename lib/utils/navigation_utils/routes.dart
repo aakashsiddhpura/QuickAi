@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../screens/Character/character_screen.dart';
 import '../../screens/Image Generator/Image_generator.dart';
+import '../../screens/Image Generator/image_view_screen.dart';
 import '../../screens/Setting/setting_screen.dart';
 import '../../screens/intro_screen.dart';
 import '../../screens/main_screen.dart';
@@ -18,6 +19,7 @@ mixin Routes {
   static const String kCharacterScreen = "/CharacterScreen";
   static const String kImageGeneratorScreen = "/ImageGeneratorScreen";
   static const String kSettingScreen = "/SettingScreen";
+  static const String kImageViewScreen = "/ImageViewScreen";
   static const String k = "/";
 
   static List<GetPage<dynamic>> routes = [
@@ -54,6 +56,11 @@ mixin Routes {
     GetPage<dynamic>(
       name: kSettingScreen,
       page: () => SettingScreen(),
+      transition: defaultTransition,
+    ),
+    GetPage<dynamic>(
+      name: kImageViewScreen,
+      page: () => ImageViewScreen(),
       transition: defaultTransition,
     ),
   ];

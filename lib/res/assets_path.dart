@@ -12,7 +12,17 @@ class AssetsPath {
   static const String introBg = '${appIcons}intro_bg.png';
   static const String robotImg = '${appIcons}robot_img.png';
   static const String profileAvatar = '${appIcons}profile_avatar.png';
-
+  static const String downloadImageBtn = '${appIcons}download_img_btn.png';
+  static const String gechoIc = '${appIcons}gecho_ic.png';
+  static const String owlIc = '${appIcons}owl_ic.png';
+  static const String puppyIc = '${appIcons}puppy_ic.png';
+  static const String sheepIc = '${appIcons}sheep_ic.png';
+  static const String sleepyCatIc = '${appIcons}sleepy_cat_ic.png';
+  static const String toucanIc = '${appIcons}toucan_ic.png';
+  static const String walkingBirdIc = '${appIcons}walking_bird_ic.png';
+  static const String funnyIc = '${appIcons}funny_ic.png';
+  static const String tigerCubIc = '${appIcons}tiger_cub_ic.png';
+  static const String lockIc = '${appIcons}lock_ic.png';
 
   ///svg
   static const String homeIC = '${appIcons}home_ic.svg';
@@ -21,4 +31,6 @@ class AssetsPath {
   static const String settingIC = '${appIcons}setting_ic.svg';
   static const String backIC = '${appIcons}back_ic.svg';
   static const String laughterIC = '${appIcons}laughter_ic.png';
+  static const String sendIC = '${appIcons}send_ic.svg';
+  static const String shareIc = '${appIcons}share_ic.svg';
 }

@@ -10,13 +10,13 @@ import 'common_textstyle.dart';
 
 PreferredSize customAppBar({Color? bgClr, required String? title, List<Widget>? action, bool? showLeading, void Function()? onLeadingTap, bool? centerTitle, int? leadingWith}) {
   return PreferredSize(
-    preferredSize: Size.fromHeight(SizeUtils.verticalBlockSize * 8),
+    preferredSize: Size.fromHeight(SizeUtils.verticalBlockSize * 10),
     child: AppBar(
       backgroundColor: bgClr ?? AppColor.appBarClr,
-      toolbarHeight: SizeUtils.verticalBlockSize * 8,
+      toolbarHeight: SizeUtils.verticalBlockSize * 10,
       title: Text(
         title ?? "",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: AppColor.white),
+        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: AppColor.white),
       ),
       centerTitle: centerTitle ?? false,
       // titleSpacing: SizeUtils.horizontalBlockSize * 5,
@@ -59,7 +59,7 @@ PreferredSize customAppBar({Color? bgClr, required String? title, List<Widget>? 
   );
 }
 
-PreferredSize appBarWithProfile({Color? bgClr, required String? title,required String? userName, List<Widget>? action, bool? showLeading, void Function()? onLeadingTap, bool? centerTitle, int? leadingWith}) {
+PreferredSize appBarWithProfile({Color? bgClr, required String? title, required String? userName, List<Widget>? action, bool? showLeading, void Function()? onLeadingTap, bool? centerTitle, int? leadingWith}) {
   return PreferredSize(
     preferredSize: Size.fromHeight(SizeUtils.verticalBlockSize * 8),
     child: AppBar(

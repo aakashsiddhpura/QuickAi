@@ -75,6 +75,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Colors.transparent,
       borderRadius: BorderRadius.circular(radius ?? 10),
       child: ValueListenableBuilder(
         valueListenable: _isObscure,
@@ -87,7 +88,7 @@ class CustomTextField extends StatelessWidget {
               readOnly: readOnly,
               validator: validator,
               style: TextStyle(
-                color: textColor ?? Colors.black,
+                color: textColor ?? AppColor.textColor,
                 fontSize: fontSize ?? SizeUtils.fSize_14(),
                 fontWeight: FontWeight.w400,
               ),
@@ -101,7 +102,7 @@ class CustomTextField extends StatelessWidget {
               keyboardType: keyboardType,
               focusNode: focusNode,
               textAlignVertical: textAlignVertical,
-              cursorColor: cursorColor ?? Colors.black,
+              cursorColor: cursorColor ?? AppColor.appBarClr,
               textAlign: textAlign ?? TextAlign.start,
               enabled: enabled,
               decoration: InputDecoration(
@@ -116,9 +117,7 @@ class CustomTextField extends StatelessWidget {
                 suffixIcon: suffixIcon == null && isPassword
                     ? IconButton(
                         icon: Icon(
-                          isObscure
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
+                          isObscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                           color: Colors.grey,
                           size: SizeUtils.verticalBlockSize * 2.6,
                         ),
@@ -127,20 +126,19 @@ class CustomTextField extends StatelessWidget {
                         },
                       )
                     : suffixIcon,
+                suffixIconConstraints: BoxConstraints(maxWidth: 60, maxHeight: 60),
                 counterText: "",
-                // contentPadding: const EdgeInsets.all(12),
                 hintText: hintText,
-                // hintStyle: TextStyle(
-                //   fontFamily: AssetsPath.robotoFonts,
-                //   color: hintTextColor ?? AppColors.textColor,
-                //   fontSize: hintFontSize ?? SizeUtils.fSize_14(),
-                //   fontWeight: hintTextWeight ?? FontWeight.w400,
-                // ),
+                hintStyle: TextStyle(
+                  color: hintTextColor ?? AppColor.textColor35,
+                  fontSize: hintFontSize ?? SizeUtils.fSize_14(),
+                  fontWeight: hintTextWeight ?? FontWeight.w400,
+                ),
                 filled: true,
-                fillColor: fillColor ?? AppColor.white,
+                fillColor: fillColor ?? AppColor.white5,
                 disabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(
-                    Radius.circular(radius ?? 10),
+                    Radius.circular(radius ?? 100),
                   ),
                   borderSide: BorderSide(
                     color: disabledColor ?? Colors.transparent,
@@ -148,7 +146,7 @@ class CustomTextField extends StatelessWidget {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(
-                    Radius.circular(radius ?? 10),
+                    Radius.circular(radius ?? 100),
                   ),
                   borderSide: BorderSide(
                     color: enableColor ?? Colors.transparent,
@@ -165,7 +163,7 @@ class CustomTextField extends StatelessWidget {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(
-                      radius ?? 10,
+                      radius ?? 100,
                     ),
                   ),
                   borderSide: BorderSide(
@@ -175,7 +173,7 @@ class CustomTextField extends StatelessWidget {
                 errorBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(
-                      radius ?? 10,
+                      radius ?? 100,
                     ),
                   ),
                   borderSide: const BorderSide(
@@ -185,7 +183,7 @@ class CustomTextField extends StatelessWidget {
                 focusedErrorBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(
-                      radius ?? 10,
+                      radius ?? 100,
                     ),
                   ),
                   borderSide: const BorderSide(

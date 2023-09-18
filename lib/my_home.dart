@@ -1,4 +1,5 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:fl_app/Database/character_list_data.dart';
 import 'package:fl_app/res/app_colors.dart';
 import 'package:fl_app/res/assets_path.dart';
 import 'package:fl_app/utils/app_binding.dart';
@@ -12,6 +13,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+
+GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: "Main Navigator");
 
 class MyHome extends StatefulWidget {
   MyHome({Key? key}) : super(key: key);
@@ -21,6 +25,12 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyHomeState extends State<MyHome> {
+  @override
+  void initState() {
+    CharacterDB().initializeGetStorage();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -36,6 +46,7 @@ class _MyHomeState extends State<MyHome> {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialBinding: AppBinding(),
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         primaryColor: AppColor.primaryClr,
         brightness: Brightness.light,
@@ -53,21 +64,24 @@ class _MyHomeState extends State<MyHome> {
         builder: (context, child) {
           SizeUtils().init(context);
 
-          return WillPopScope(
-            onWillPop: () async {
-              bool exit = await showDialog(
-                context: context,
-                builder: (context) => ExitPopup(),
-              );
-              return exit ?? false;
-            },
-            child: Scaffold(
-              // backgroundColor: AppColors.white,
-              resizeToAvoidBottomInset: false,
-              body: ScrollConfiguration(
-                behavior: MyBehavior(),
-                child: ConnectivityWidget(
-                  builder: (_, __) => BotToastInit()(_, child),
+          return GlobalLoaderOverlay(
+            overlayColor: Colors.black45,
+            child: WillPopScope(
+              onWillPop: () async {
+                bool exit = await showDialog(
+                  context: context,
+                  builder: (context) => ExitPopup(),
+                );
+                return exit ?? false;
+              },
+              child: Scaffold(
+                // backgroundColor: AppColors.white,
+                resizeToAvoidBottomInset: false,
+                body: ScrollConfiguration(
+                  behavior: MyBehavior(),
+                  child: ConnectivityWidget(
+                    builder: (_, __) => BotToastInit()(_, child),
+                  ),
                 ),
               ),
             ),
