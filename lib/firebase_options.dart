@@ -63,6 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '779921439165',
     projectId: 'chatpix-ai',
     storageBucket: 'chatpix-ai.appspot.com',
+    androidClientId: '779921439165-n10utus88sstbatqpoli2mfvk9tqgp47.apps.googleusercontent.com',
+    iosClientId: '779921439165-lo1gcj06drl0rsmt4aurmds6ra6614p8.apps.googleusercontent.com',
     iosBundleId: 'com.chatpix.ai',
   );
 }

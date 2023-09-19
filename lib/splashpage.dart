@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:fl_app/ads/call_ads.dart';
+import 'package:fl_app/controller/auth_controller.dart';
 import 'package:fl_app/res/app_colors.dart';
 import 'package:fl_app/res/assets_path.dart';
 import 'package:fl_app/utils/navigation_utils/navigation.dart';
 import 'package:fl_app/utils/navigation_utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'utils/size_utils.dart';
@@ -19,7 +21,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  // VpnController vpnController = Get.put(VpnController());
+  AuthController authController = Get.put(AuthController());
   @override
   void initState() {
     super.initState();
@@ -76,7 +78,7 @@ class _SplashPageState extends State<SplashPage> {
       // } else if (AdConstants.adsModel.showScreen?.b3 == true) {
       //   Navigation.replaceAll(Routes.continuePage);
       // } else {
-      Navigation.replaceAll(Routes.kIntroScreen);
+      Navigation.replaceAll(authController.user.value.uid.isNotEmpty ? Routes.kMainScreen : Routes.kIntroScreen);
       // }
     });
   }

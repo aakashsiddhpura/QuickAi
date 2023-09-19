@@ -3,8 +3,10 @@ import 'package:fl_app/res/app_colors.dart';
 import 'package:fl_app/res/assets_path.dart';
 import 'package:fl_app/utils/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'dart:async';
 
+import '../controller/auth_controller.dart';
 import '../utils/navigation_utils/navigation.dart';
 import '../utils/navigation_utils/routes.dart';
 
@@ -16,6 +18,8 @@ class IntroScreen extends StatefulWidget {
 }
 
 class _IntroScreenState extends State<IntroScreen> {
+  final AuthController authController = Get.put(AuthController());
+
   final PageController _pageController = PageController();
   StreamController<int> _currentPageStreamController = StreamController<int>();
   int _currentPage = 0;
@@ -123,7 +127,11 @@ class _IntroScreenState extends State<IntroScreen> {
             padding: EdgeInsets.only(top: SizeUtils.verticalBlockSize * 8),
             child: TextButton(
               onPressed: () {
-                Navigation.replaceAll(Routes.kMainScreen);
+                if (authController.user.value.uid.isEmpty) {
+                  Navigation.replaceAll(Routes.kLoginScreen);
+                } else {
+                  Navigation.replaceAll(Routes.kMainScreen);
+                }
               },
               child: Text(
                 "SKIP",

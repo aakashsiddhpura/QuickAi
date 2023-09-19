@@ -37,4 +37,6 @@ class AssetsPath {
   static const String laughterIC = '${appIcons}laughter_ic.png';
   static const String sendIC = '${appIcons}send_ic.svg';
   static const String shareIc = '${appIcons}share_ic.svg';
+  static const String eyeIc = '${appIcons}eye_ic.svg';
+  static const String eyeCloseIc = '${appIcons}eye_close_ic.svg';
 }

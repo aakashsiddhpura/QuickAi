@@ -1,6 +1,11 @@
 import 'package:fl_app/res/app_colors.dart';
 import 'package:fl_app/utils/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
+
+import '../res/assets_path.dart';
+import '../res/strings_utils.dart';
 
 class CustomTextField extends StatelessWidget {
   final bool readOnly;
@@ -32,43 +37,47 @@ class CustomTextField extends StatelessWidget {
   final Color? focusedColor;
   final Color? cursorColor;
   final EdgeInsetsGeometry? contentPadding;
+  TextInputAction? textInputAction;
   final Widget? prefixWidget;
   final FormFieldValidator<String>? validator;
+  final String? inputFormatter;
 
-  CustomTextField({
-    Key? key,
-    this.validator,
-    this.spreadRadius,
-    this.offset,
-    this.onChanged,
-    this.disabledColor,
-    this.maxLine = 1,
-    this.maxLength,
-    this.radius,
-    this.fontSize,
-    this.fillColor,
-    this.textColor,
-    this.isPassword = false,
-    this.enabled = true,
-    this.keyboardType = TextInputType.text,
-    this.focusNode,
-    this.hintText,
-    this.hintTextColor,
-    this.hintFontSize,
-    this.hintTextWeight,
-    this.textAlign,
-    this.textAlignVertical,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.onTap,
-    this.enableColor,
-    this.focusedColor,
-    this.cursorColor,
-    required this.controller,
-    this.contentPadding,
-    this.prefixWidget,
-    this.readOnly = false,
-  }) : super(key: key);
+  CustomTextField(
+      {Key? key,
+      this.validator,
+      this.spreadRadius,
+      this.offset,
+      this.onChanged,
+      this.disabledColor,
+      this.maxLine = 1,
+      this.maxLength,
+      this.radius,
+      this.fontSize,
+      this.fillColor,
+      this.textColor,
+      this.isPassword = false,
+      this.enabled = true,
+      this.keyboardType = TextInputType.text,
+      this.textInputAction,
+      this.focusNode,
+      this.hintText,
+      this.hintTextColor,
+      this.hintFontSize,
+      this.hintTextWeight,
+      this.textAlign,
+      this.textAlignVertical,
+      this.prefixIcon,
+      this.suffixIcon,
+      this.onTap,
+      this.enableColor,
+      this.focusedColor,
+      this.cursorColor,
+      required this.controller,
+      this.contentPadding,
+      this.prefixWidget,
+      this.readOnly = false,
+      this.inputFormatter})
+      : super(key: key);
 
   final ValueNotifier<bool> _isObscure = ValueNotifier(true);
 
@@ -97,12 +106,14 @@ class CustomTextField extends StatelessWidget {
               obscuringCharacter: '*',
               onChanged: onChanged,
               controller: controller,
+              inputFormatters: inputFormattersFun(),
+              textInputAction: textInputAction ?? TextInputAction.next,
               maxLines: maxLine,
               maxLength: maxLength,
               keyboardType: keyboardType,
               focusNode: focusNode,
               textAlignVertical: textAlignVertical,
-              cursorColor: cursorColor ?? AppColor.appBarClr,
+              cursorColor: cursorColor ?? AppColor.textColor35,
               textAlign: textAlign ?? TextAlign.start,
               enabled: enabled,
               decoration: InputDecoration(
@@ -116,11 +127,8 @@ class CustomTextField extends StatelessWidget {
                 prefixIcon: prefixIcon,
                 suffixIcon: suffixIcon == null && isPassword
                     ? IconButton(
-                        icon: Icon(
-                          isObscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                          color: Colors.grey,
-                          size: SizeUtils.verticalBlockSize * 2.6,
-                        ),
+                        splashRadius: 20,
+                        icon: isObscure ? SvgPicture.asset(AssetsPath.eyeCloseIc) : SvgPicture.asset(AssetsPath.eyeIc),
                         onPressed: () {
                           _isObscure.value = !isObscure;
                         },
@@ -152,14 +160,14 @@ class CustomTextField extends StatelessWidget {
                     color: enableColor ?? Colors.transparent,
                   ),
                 ),
-                // border: OutlineInputBorder(
-                //   borderRadius: BorderRadius.all(
-                //     Radius.circular(radius ?? 10),
-                //   ),
-                //   borderSide: BorderSide(
-                //     color: focusedColor ?? Colors.transparent,
-                //   ),
-                // ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(radius ?? 10),
+                  ),
+                  borderSide: BorderSide(
+                    color: focusedColor ?? Colors.transparent,
+                  ),
+                ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(
@@ -196,5 +204,64 @@ class CustomTextField extends StatelessWidget {
         },
       ),
     );
+  }
+
+  inputFormattersFun() {
+    switch (inputFormatter) {
+      case Validate.nameFormat:
+        return [
+          LengthLimitingTextInputFormatter(35),
+          NoLeadingSpaceFormatter(),
+          FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú Á-Ú 0-9 .,-]")),
+        ];
+      case Validate.emailFormat:
+        return [
+          NoLeadingSpaceFormatter(),
+          LowerCaseTextFormatter(),
+          FilteringTextInputFormatter.deny(RegExp("[ ]")),
+          FilteringTextInputFormatter.allow(RegExp("[a-zá-ú0-9.,-_@]")),
+          LengthLimitingTextInputFormatter(50),
+        ];
+      case Validate.passFormat:
+        return [
+          LengthLimitingTextInputFormatter(20),
+          FilteringTextInputFormatter.deny(RegExp('[ ]')),
+          FilteringTextInputFormatter.allow(RegExp("[a-zA-Zá-úÁ-Ú0-9-@\$%&#*]")),
+        ];
+
+      default:
+        return [
+          NoLeadingSpaceFormatter(),
+        ];
+    }
+  }
+}
+
+class NoLeadingSpaceFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (newValue.text.startsWith(' ')) {
+      final String trimedText = newValue.text.trimLeft();
+
+      return TextEditingValue(
+        text: trimedText,
+        selection: TextSelection(
+          baseOffset: trimedText.length,
+          extentOffset: trimedText.length,
+        ),
+      );
+    }
+
+    return newValue;
+  }
+}
+
+class LowerCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(text: newValue.text.toLowerCase(), selection: newValue.selection);
   }
 }
