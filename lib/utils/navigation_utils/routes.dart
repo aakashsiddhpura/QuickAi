@@ -2,6 +2,7 @@ import 'package:fl_app/screens/Home/home_screen.dart';
 import 'package:fl_app/splashpage.dart';
 import 'package:get/get.dart';
 
+import '../../screens/Character/character_chat_screen.dart';
 import '../../screens/Character/character_screen.dart';
 import '../../screens/Image Generator/Image_generator.dart';
 import '../../screens/Image Generator/image_view_screen.dart';
@@ -20,6 +21,7 @@ mixin Routes {
   static const String kImageGeneratorScreen = "/ImageGeneratorScreen";
   static const String kSettingScreen = "/SettingScreen";
   static const String kImageViewScreen = "/ImageViewScreen";
+  static const String kCharacterChatScreen = "/CharacterChatScreen";
   static const String k = "/";
 
   static List<GetPage<dynamic>> routes = [
@@ -61,6 +63,11 @@ mixin Routes {
     GetPage<dynamic>(
       name: kImageViewScreen,
       page: () => ImageViewScreen(),
+      transition: defaultTransition,
+    ),
+    GetPage<dynamic>(
+      name: kCharacterChatScreen,
+      page: () => CharacterChatScreen(),
       transition: defaultTransition,
     ),
   ];

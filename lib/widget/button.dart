@@ -3,42 +3,71 @@ import 'package:flutter/material.dart';
 
 import '../utils/size_utils.dart';
 
-Widget createButton({
-  required String? text,
-  required VoidCallback onTap,
-  Color? buttonColor,
-  Color? textColor,
-  double? radius,
-  double? vertical,
-  bool txtSize = false,
-}) {
-  return InkWell(
-    onTap: onTap,
-    child: Padding(
-      padding: EdgeInsets.symmetric(
-          vertical: txtSize ? 0 : SizeUtils.horizontalBlockSize * 8),
-      child: Container(
-        width: double.infinity,
+class CustomButton extends StatelessWidget {
+  double? width;
+
+  final double? height;
+  final ButtonStyle? style;
+  final void Function()? onPressed;
+  final String? text;
+  final FontWeight? fontWeight;
+  final double? fontSize;
+  final Color? textColor;
+  bool? bordered = false;
+  final Color? buttonColor;
+  final Color? borderColor;
+  final double? radius;
+  final Gradient? gradient;
+  final TextStyle? textStyle;
+  final List<BoxShadow>? buttonShadow;
+  final String? buttonIcon;
+  final double? iconSize;
+
+  CustomButton({Key? key, this.buttonShadow, this.width, this.height, this.style, required this.onPressed, required this.text, this.fontWeight, this.fontSize, this.textColor, this.buttonColor, this.bordered, this.borderColor, this.gradient, this.radius, this.textStyle, this.buttonIcon, this.iconSize}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      borderRadius: BorderRadius.circular(50.0),
+      elevation: 4.0,
+      surfaceTintColor: Colors.black,
+      shadowColor: Colors.red,
+      color: Colors.yellow,
+      borderOnForeground: false,
+      type: MaterialType.transparency,
+      child: Ink(
         decoration: BoxDecoration(
-          color: buttonColor ?? AppColor.white,
-          borderRadius: BorderRadius.circular(radius ?? 12),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: vertical ?? SizeUtils.verticalBlockSize * 1.4,
+          gradient: const LinearGradient(
+            begin: Alignment(1.00, -0.04),
+            end: Alignment(-1, 0.04),
+            colors: [
+              Color(0xFF231C8E),
+              Color(0xFF7268EE),
+            ],
           ),
-          child: Text(
-            "$text",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: textColor,
-              // fontFamily: AssetsPath.roboto,
-              fontSize: txtSize ? SizeUtils.fSize_16() : SizeUtils.fSize_20(),
-              fontWeight: FontWeight.w600,
+          borderRadius: BorderRadius.circular(50.0),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(50.0),
+          onTap: onPressed,
+          child: Container(
+            padding: EdgeInsets.all(5),
+            constraints: BoxConstraints(minWidth: width ?? SizeUtils.horizontalBlockSize * 70, maxWidth: width ?? SizeUtils.horizontalBlockSize * 70, maxHeight: height ?? SizeUtils.horizontalBlockSize * 15),
+            height: height ?? SizeUtils.horizontalBlockSize * 15,
+            decoration: BoxDecoration(
+              color: buttonColor ?? Colors.transparent,
+              borderRadius: BorderRadius.circular(radius ?? 50),
+            ),
+            child: Center(
+              child: Text(
+                text ?? "",
+                textAlign: TextAlign.center,
+                style: textStyle ?? TextStyle(fontWeight: fontWeight ?? FontWeight.w600, fontSize: fontSize ?? SizeUtils.fSize_16(), color: textColor ?? AppColor.white),
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

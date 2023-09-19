@@ -10,7 +10,9 @@ class AssetsPath {
   /// png
   static const String splashBg = '${appIcons}splash_bg.png';
   static const String introBg = '${appIcons}intro_bg.png';
-  static const String robotImg = '${appIcons}robot_img.png';
+  static const String intro1Img = '${appIcons}intro_1_img.png';
+  static const String intro2Img = '${appIcons}intro_2_img.png';
+  static const String intro3Img = '${appIcons}intro_3_img.png';
   static const String profileAvatar = '${appIcons}profile_avatar.png';
   static const String downloadImageBtn = '${appIcons}download_img_btn.png';
   static const String gechoIc = '${appIcons}gecho_ic.png';
@@ -23,6 +25,8 @@ class AssetsPath {
   static const String funnyIc = '${appIcons}funny_ic.png';
   static const String tigerCubIc = '${appIcons}tiger_cub_ic.png';
   static const String lockIc = '${appIcons}lock_ic.png';
+  static const String userChatCorner = '${appIcons}user_chat_corner.png';
+  static const String aiChatCorner = '${appIcons}ai_chat_corner.png';
 
   ///svg
   static const String homeIC = '${appIcons}home_ic.svg';

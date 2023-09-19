@@ -94,7 +94,7 @@ class _ImageViewScreenState extends State<ImageViewScreen> {
 
       final Directory? quickAiDirectory = await getExternalStorageDirectory();
       final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-      final String filePath = '${quickAiDirectory!.path.replaceFirst("data", "media")}/Quick Ai/QuickAI_$timestamp.jpg';
+      final String filePath = '${quickAiDirectory!.path.replaceFirst("data", "media")}/ChatPix AI/ChatPix_image$timestamp.jpg';
       final File file = await File(filePath).create(recursive: true);
       if (isFileShare == true) {
         Share.shareFiles([file.path]);

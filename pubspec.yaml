@@ -60,6 +60,15 @@ dependencies:
   loader_overlay: ^2.0.6
   share_plus: ^6.3.0
   get_storage: ^2.1.1
+  # chat ui
+  flutter_chat_bubble: ^2.0.2
+  speech_to_text: ^6.3.0
+  flutter_tts: ^3.8.3
+  simple_ripple_animation: ^0.0.7
+  animated_text_kit: ^4.2.2
+  firebase_core: ^2.15.1
+  firebase_auth: ^4.9.0
+  google_sign_in: ^6.1.5
 #  custom_info_window: ^1.0.1
 
 

@@ -40,9 +40,9 @@ class _IntroScreenState extends State<IntroScreen> {
   }
 
   List<IntroDataModel> introList = [
-    IntroDataModel(title: "Your AI assistant", description: "Quickl is intended to boost your productivity by quick access to information."),
-    IntroDataModel(title: "Human-like Conversations", description: "Quickl understand and response to your message in a natural way."),
-    IntroDataModel(title: "I can do anything", description: "I can write your essays, emails, codes, text and more."),
+    IntroDataModel(title: "Your AI assistant", description: "ChatPix AI is intended to boost your productivity by quick access to information.", image: AssetsPath.intro1Img),
+    IntroDataModel(title: "Human-like Conversations", description: "ChatPix AI understand and response to your message in a natural way.", image: AssetsPath.intro2Img),
+    IntroDataModel(title: "I can do anything", description: "I can write your essays, emails, codes, text and more.", image: AssetsPath.intro3Img),
   ];
 
   @override
@@ -73,17 +73,17 @@ class _IntroScreenState extends State<IntroScreen> {
                       Image(
                         width: SizeUtils.horizontalBlockSize * 80,
                         height: SizeUtils.horizontalBlockSize * 80,
-                        image: const AssetImage(AssetsPath.robotImg),
+                        image: AssetImage(introList[index].image),
                       ),
                       Padding(
                         padding: EdgeInsets.only(top: SizeUtils.verticalBlockSize * 5, bottom: SizeUtils.verticalBlockSize * 2),
                         child: Text(
-                          introList[index].title ?? "",
+                          introList[index].title,
                           style: const TextStyle(color: AppColor.white, fontSize: 28, fontWeight: FontWeight.bold),
                         ),
                       ),
                       Text(
-                        introList[index].description ?? "",
+                        introList[index].description,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: AppColor.textColor70,
@@ -138,8 +138,9 @@ class _IntroScreenState extends State<IntroScreen> {
 }
 
 class IntroDataModel {
-  String? title;
-  String? description;
+  String title;
+  String description;
+  String image;
 
-  IntroDataModel({required this.title, required this.description});
+  IntroDataModel({required this.title, required this.description, required this.image});
 }

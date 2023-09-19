@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:fl_app/env/env.dart';
 import 'package:fl_app/res/app_colors.dart';
@@ -38,7 +35,7 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: "Quickl Image", leadingWith: 0),
+      appBar: customAppBar(title: "ChatPix AI Image", leadingWith: 0),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -52,16 +49,17 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
             CustomTextField(
               controller: promptController,
               hintText: 'Enter your prompt...',
-              suffixIcon: InkWell(
-                onTap: () async {
-                  await generateImages(promptController.text);
-                },
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  margin: const EdgeInsets.only(right: 6),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(gradient: AppColor.primaryGradiant, borderRadius: BorderRadius.circular(100)),
+              suffixIcon: Container(
+                width: 40,
+                height: 40,
+                margin: const EdgeInsets.only(right: 6),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(gradient: AppColor.primaryGradiant, borderRadius: BorderRadius.circular(100)),
+                child: InkResponse(
+                  radius: 25,
+                  onTap: () async {
+                    await generateImages(promptController.text);
+                  },
                   child: SvgPicture.asset(AssetsPath.sendIC),
                 ),
               ),

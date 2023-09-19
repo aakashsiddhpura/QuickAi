@@ -22,4 +22,10 @@ class AppColor {
   static const gradiantDark = Color(0xFF241C8E);
   static const appBarClr = Color(0xFF374159);
   static const bottomBarClr = Color(0xFF242935);
+  static const inActiveButton = Color(0xFF4E4C66);
+  static const aiAnsTextClr = Color(0xFFCCD6F0);
+  static const aiAnsBgClr = Color(0xFF3A4154);
+  static const userPromptTextClr = Color(0xFF121034);
+  static const userPromptBgClr = Color(0xFFA49DFA);
+  static const popupmenuClr = Color(0xFF323846);
 }
