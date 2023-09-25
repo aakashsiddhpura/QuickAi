@@ -9,8 +9,12 @@ import 'package:fl_app/utils/navigation_utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:lottie/lottie.dart';
+import 'ads/rewarded_ad.dart';
+import 'controller/home_controller.dart';
 import 'utils/size_utils.dart';
 
 class SplashPage extends StatefulWidget {
@@ -22,10 +26,27 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   AuthController authController = Get.put(AuthController());
+  HomeController homeController = Get.put(HomeController());
+  RewardedAdController rewardedAdController = Get.put(RewardedAdController(), permanent: true);
+
+  bool _lottieVisible = false;
+  bool _textVisible = false;
   @override
   void initState() {
     super.initState();
-    startTimeOut();
+    Future.delayed(Duration(milliseconds: 300), () {
+      setState(() {
+        _textVisible = true;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 600), () {
+      setState(() {
+        _lottieVisible = true;
+      });
+    });
+    Future.delayed(Duration(seconds: 1), () {
+      startTimeOut();
+    });
   }
 
   Future<void> loadAdsData() async {}
@@ -38,8 +59,20 @@ class _SplashPageState extends State<SplashPage> {
         children: [
           Container(
             width: double.infinity,
+            height: double.infinity,
+            color: Colors.black87,
+            child: Image.asset(
+              AssetsPath.splashBgImg,
+              fit: BoxFit.cover,
+              opacity: const AlwaysStoppedAnimation(.7),
+              width: double.infinity,
+              height: double.infinity,
+            ),
+          ),
+          Container(
+            width: double.infinity,
             clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment(0.21, -0.98),
                 end: Alignment(-0.21, 0.98),
@@ -49,28 +82,55 @@ class _SplashPageState extends State<SplashPage> {
             child: Image.asset(
               AssetsPath.splashBg,
               fit: BoxFit.cover,
+              opacity: const AlwaysStoppedAnimation(.5),
             ),
           ),
-          Positioned(
-            bottom: SizeUtils.verticalBlockSize * 8,
-            child: Center(
-              child: LoadingAnimationWidget.discreteCircle(
-                color: AppColor.white,
-                secondRingColor: AppColor.secondaryClr,
-                thirdRingColor: AppColor.primaryClr,
-                size: 50,
-              ),
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.white.withOpacity(.05),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedOpacity(
+                    opacity: _lottieVisible ? 1.0 : 0.0, duration: const Duration(milliseconds: 800), child: Lottie.asset(AssetsPath.splashLoader)),
+                AnimatedOpacity(
+                  opacity: _textVisible ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 800),
+                  child: const Text(
+                    "ChatPix Ai",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 40, color: AppColor.textColor),
+                  ),
+                )
+              ],
             ),
-          ),
+          )
+          // Positioned(
+          //   bottom: SizeUtils.verticalBlockSize * 8,
+          //   child: Center(
+          //     child: LoadingAnimationWidget.discreteCircle(
+          //       color: AppColor.white,
+          //       secondRingColor: AppColor.secondaryClr,
+          //       thirdRingColor: AppColor.primaryClr,
+          //       size: 50,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
   }
 
   Future<void> startTimeOut() async {
+    await rewardedAdController.getAdsData();
     await CallAds().getApiResponse();
+    GetStorage storage = GetStorage();
+    bool? newUser = storage.read("new_user");
+    if (newUser == null) {
+      storage.write("new_user", false);
+    }
 
-    Future.delayed(Duration(seconds: adsModel.adsShow == true ? 0 : 3), () {
+    Future.delayed(Duration(seconds: adsModel.adsShow == true ? 1 : 3), () {
       // if (AdConstants.adsModel.showScreen?.b1 == true) {
       // Navigation.replaceAll(Routes.startPage);
       // } else if (AdConstants.adsModel.showScreen?.b2 == true) {
@@ -78,7 +138,11 @@ class _SplashPageState extends State<SplashPage> {
       // } else if (AdConstants.adsModel.showScreen?.b3 == true) {
       //   Navigation.replaceAll(Routes.continuePage);
       // } else {
-      Navigation.replaceAll(authController.user.value.uid.isNotEmpty ? Routes.kMainScreen : Routes.kIntroScreen);
+      Navigation.replace(authController.user.value.uid.isNotEmpty
+          ? Routes.kMainScreen
+          : newUser == false
+              ? Routes.kLoginScreen
+              : Routes.kIntroScreen);
       // }
     });
   }

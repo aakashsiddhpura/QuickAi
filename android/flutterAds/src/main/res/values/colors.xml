@@ -9,6 +9,6 @@
     <color name="ad_text_primary">#000000</color>
     <color name="ad_text_secondary">#A8000000</color>
     <color name="red">#F60000</color>
-    <color name="ad_button_clr">#ff2C459F</color>
-    <color name="theme_color">#ff2C459F</color>
+    <color name="ad_button_clr">#ff241C8E</color>
+    <color name="theme_color">#ff241C8E</color>
 </resources>

@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:fl_app/ads/banner_view.dart';
 import 'package:fl_app/res/assets_path.dart';
 import 'package:fl_app/utils/size_utils.dart';
 import 'package:fl_app/widget/custom_appbar.dart';
@@ -55,18 +57,15 @@ class _ImageViewScreenState extends State<ImageViewScreen> {
             child: imageUrl != null
                 ? Padding(
                     padding: EdgeInsets.all(SizeUtils.horizontalBlockSize * 5),
-                    child: Image.network(
-                      imageUrl!,
-                      fit: BoxFit.contain,
-                      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Center(
-                          child: CircularProgressIndicator(
-                            color: AppColor.primaryClr,
-                            value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
-                          ),
-                        );
-                      },
+                    child: Hero(
+                      tag: imageUrl!,
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl!,
+                        fit: BoxFit.contain,
+                        progressIndicatorBuilder: (context, url, downloadProgress) =>
+                            Center(child: CircularProgressIndicator(color: AppColor.primaryClr, value: downloadProgress.progress)),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                      ),
                     ),
                   )
                 : SizedBox(),
@@ -83,6 +82,7 @@ class _ImageViewScreenState extends State<ImageViewScreen> {
           )
         ],
       ),
+      bottomNavigationBar: PreBannerAd(),
     );
   }
 

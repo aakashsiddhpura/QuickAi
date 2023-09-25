@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppString {
   AppString._();
 
+  static const String kPackageName = "com.chatpix.ai";
   static const String appName = "ChatPix Ai";
 }
 
@@ -30,5 +31,6 @@ class Validate {
   static String emailNotValidValidator = "Your email is not valid please enter the Correct email";
   static String cPassNotMatchValidator = "The confirm password does not match";
   static String accCreatedValidator = "Your account has been successfully created";
+  static String updateProfile = "Your profile updated successfully";
   static String sendVeriCodeValidator = "Successfully ! send verification code to your email";
 }

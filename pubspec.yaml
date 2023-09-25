@@ -50,7 +50,6 @@ dependencies:
   flutter_jailbreak_detection: ^1.10.0
   app_settings: ^5.0.0
   flutter_easyloading: ^3.0.5
-  google_mobile_ads: ^3.0.0
   flutter_svg: ^1.1.6
   dots_indicator: 3.0.0
   circle_nav_bar: ^2.0.1+1
@@ -70,7 +69,15 @@ dependencies:
   firebase_auth: ^4.9.0
   google_sign_in: ^6.1.5
   cloud_firestore: ^4.9.1
+  in_app_review: ^2.0.6
+  lottie: ^2.6.0
+  cached_network_image: ^3.2.3
+
+  google_mobile_ads: ^3.0.0
+  facebook_audience_network: ^1.0.1
+  applovin_max: ^3.2.0
 #  custom_info_window: ^1.0.1
+
 
 
 
@@ -102,6 +109,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/json/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

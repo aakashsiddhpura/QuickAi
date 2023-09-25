@@ -1,4 +1,5 @@
 import 'package:circle_nav_bar/circle_nav_bar.dart';
+import 'package:fl_app/controller/premium_controller.dart';
 import 'package:fl_app/res/app_colors.dart';
 import 'package:fl_app/res/assets_path.dart';
 import 'package:fl_app/screens/Character/character_screen.dart';
@@ -19,6 +20,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  PremiumController premiumController = Get.put(PremiumController());
   int _tabIndex = 0;
   int get tabIndex => _tabIndex;
   set tabIndex(int v) {
@@ -31,6 +33,11 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    premiumController.readAndSetFreeCount();
+
+    Future.delayed(Duration(seconds: 2), () {
+      premiumController.openPremiumDialog();
+    });
     pageController = PageController(initialPage: _tabIndex);
   }
 
@@ -90,6 +97,7 @@ class _MainScreenState extends State<MainScreen> {
         },
         children: [HomeScreen(), CharacterScreen(), ImageGeneratorScreen(), SettingScreen()],
       ),
+      resizeToAvoidBottomInset: false,
     );
   }
 }

@@ -73,7 +73,7 @@ PreferredSize appBarWithProfile({Color? bgClr, required String? title, required 
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: AppColor.white),
           ),
           Text(
-            "Hey,${userName ?? "John"}",
+            "Hey, ${userName ?? "John"}",
             style: TextStyle(fontWeight: FontWeight.w400, fontSize: 15, color: AppColor.textColor70),
           ),
         ],

@@ -51,7 +51,7 @@ class _PreBannerAdState extends State<PreBannerAd> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: adsModel.adsShow == false ? 0 :widget.height ?? 70,
+      height: adsModel.adsShow == false ? 0 : widget.height ?? 70,
       child: BlurViewBannerWidget(
         onBlurBannerViewWidgetCreated: _onBannerViewWidgetCreated,
       ),

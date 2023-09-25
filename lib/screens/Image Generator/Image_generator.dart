@@ -1,4 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:fl_app/ads/banner_view.dart';
+import 'package:fl_app/controller/premium_controller.dart';
 import 'package:fl_app/env/env.dart';
 import 'package:fl_app/res/app_colors.dart';
 import 'package:fl_app/res/assets_path.dart';
@@ -7,12 +10,13 @@ import 'package:fl_app/utils/navigation_utils/routes.dart';
 import 'package:fl_app/utils/size_utils.dart';
 import 'package:fl_app/widget/custom_appbar.dart';
 import 'package:fl_app/widget/custom_textfield.dart';
+import 'package:fl_app/widget/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../model/dall_e_model.dart';
-import '../../widget/subscribe_now_widget.dart';
+import '../premium_screen/subscribe_now_widget.dart';
 
 class ImageGeneratorScreen extends StatefulWidget {
   const ImageGeneratorScreen({super.key});
@@ -24,14 +28,18 @@ class ImageGeneratorScreen extends StatefulWidget {
 class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
   final TextEditingController promptController = TextEditingController();
   final List<DallEImage> generatedImages = <DallEImage>[
-    DallEImage(url: "https://images.unsplash.com/photo-1538991383142-36c4edeaffde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80"),
-    DallEImage(url: "https://images.unsplash.com/photo-1538991383142-36c4edeaffde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80"),
-    DallEImage(url: "https://images.unsplash.com/photo-1538991383142-36c4edeaffde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80"),
-    DallEImage(url: "https://images.unsplash.com/photo-1430990480609-2bf7c02a6b1a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"),
+    // DallEImage(
+    //     url:
+    //         "https://images.unsplash.com/photo-1538991383142-36c4edeaffde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80"),
+    // DallEImage(
+    //     url:
+    //         "https://images.unsplash.com/photo-1430990480609-2bf7c02a6b1a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"),
   ].obs;
   String selectedSize = imageSizes[0]; // Default to the first size
 
   static const List<String> imageSizes = ["256x256", "512x512", "1024x1024"];
+  PremiumController premiumController = Get.put(PremiumController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +66,16 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
                 child: InkResponse(
                   radius: 25,
                   onTap: () async {
-                    await generateImages(promptController.text);
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
+                    if (premiumController.imageFreeCount.value <= 0) {
+                      premiumController.openPremiumDialog();
+                    } else {
+                      premiumController.useCount(useType: FreeCount.imageFreeCount);
+                      await generateImages(promptController.text);
+                    }
                   },
                   child: SvgPicture.asset(AssetsPath.sendIC),
                 ),
@@ -83,13 +100,22 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
                 );
               }).toList(),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: PreBannerAd(),
+            ),
             Expanded(
               child: Obx(() {
                 if (generatedImages.isEmpty) {
-                  return const Center(child: Text("No images available."));
+                  return const Center(
+                      child: Text(
+                    "Enter prompt and create your images",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: AppColor.textColor70, fontSize: 18, fontWeight: FontWeight.w500),
+                  ));
                 } else {
                   return GridView.builder(
-                    padding: EdgeInsets.symmetric(vertical: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 20),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 16.0, // Adjust spacing between items
@@ -97,23 +123,32 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
                     ),
                     itemCount: generatedImages.length,
                     itemBuilder: (context, index) {
-                      return ImageCard(imageUrl: generatedImages[index].url);
+                      return Hero(tag: generatedImages[index].url, child: ImageCard(imageUrl: generatedImages[index].url));
                     },
                   );
                 }
               }),
             ),
-            SubscribeNowText()
           ],
         ),
       ),
-      bottomNavigationBar: SizedBox(
-        height: SizeUtils.verticalBlockSize * 9,
+      resizeToAvoidBottomInset: false,
+      bottomNavigationBar: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            SubscribeNowText(screenType: FreeCount.imageFreeCount),
+            SizedBox(
+              height: SizeUtils.verticalBlockSize * 9,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Future<void> generateImages(String prompt) async {
+    Loader.sw(imageLoader: true);
     try {
       final dio = Dio();
       String apiKey = Env.key;
@@ -137,7 +172,9 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
       } else {
         Get.snackbar('Error', 'Failed to generate images.');
       }
+      Loader.hd();
     } catch (e) {
+      Loader.hd();
       Get.snackbar('Error', 'An error occurred: $e');
     }
   }
@@ -194,18 +231,12 @@ class ImageCard extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
-          child: Image.network(
-            imageUrl,
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
             fit: BoxFit.cover,
-            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Center(
-                child: CircularProgressIndicator(
-                  color: AppColor.primaryClr,
-                  value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
-                ),
-              );
-            },
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                Center(child: CircularProgressIndicator(color: AppColor.primaryClr, value: downloadProgress.progress)),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
         ),
       ),

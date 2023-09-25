@@ -27,6 +27,9 @@ class AssetsPath {
   static const String lockIc = '${appIcons}lock_ic.png';
   static const String userChatCorner = '${appIcons}user_chat_corner.png';
   static const String aiChatCorner = '${appIcons}ai_chat_corner.png';
+  static const String splashBgImg = '${appIcons}splash_bg_img.png';
+  static const String premiumRoboImg = '${appIcons}premium_robo_img.png';
+  static const String premiumLabelIc = '${appIcons}premium_label_ic.png';
 
   ///svg
   static const String homeIC = '${appIcons}home_ic.svg';
@@ -39,4 +42,21 @@ class AssetsPath {
   static const String shareIc = '${appIcons}share_ic.svg';
   static const String eyeIc = '${appIcons}eye_ic.svg';
   static const String eyeCloseIc = '${appIcons}eye_close_ic.svg';
+  static const String deleteIc = '${appIcons}delete_ic.svg';
+  static const String faqsIc = '${appIcons}faqs_ic.svg';
+  static const String logoutIc = '${appIcons}logout_ic.svg';
+  static const String manageSubIc = '${appIcons}manage_sub_ic.svg';
+  static const String nextArrowIc = '${appIcons}next_arrow_ic.svg';
+  static const String privacyPolicyIc = '${appIcons}privacy_policy_ic.svg';
+  static const String starIc = '${appIcons}star_ic.svg';
+  static const String termsIc = '${appIcons}terms_ic.svg';
+  static const String forgotPwdIc = '${appIcons}forgot_password_ic.svg';
+  static const String historyIc = '${appIcons}history_ic.svg';
+  static const String splashBgSvg = '${appIcons}splash_bg.svg';
+  static const String googleIc = '${appIcons}google_ic.svg';
+  static const String doneIc = '${appIcons}done_ic.svg';
+
+  /// json
+  static const String splashLoader = 'assets/json/splash_loader.json';
+  static const String imageLoader = 'assets/json/image_loader.json';
 }

@@ -1,34 +1,27 @@
 import 'dart:convert';
 
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:dio/dio.dart';
+import 'package:fl_app/ads/banner_view.dart';
+import 'package:fl_app/controller/premium_controller.dart';
 import 'package:fl_app/res/app_colors.dart';
 import 'package:fl_app/res/strings_utils.dart';
 import 'package:fl_app/utils/size_utils.dart';
 import 'package:fl_app/widget/custom_textfield.dart';
-import 'package:fl_app/widget/subscribe_now_widget.dart';
+import 'package:fl_app/screens/premium_screen/subscribe_now_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../Database/character_list_data.dart';
 import '../../env/env.dart';
 import '../../res/assets_path.dart';
+import '../../widget/chat_ui.dart';
 import '../../widget/custom_appbar.dart';
 import '../../widget/toast_helper.dart';
-
-class Message {
-  final String role;
-  final String content;
-
-  Message(this.role, this.content);
-}
 
 class CharacterChatScreen extends StatefulWidget {
   const CharacterChatScreen({super.key});
@@ -38,6 +31,8 @@ class CharacterChatScreen extends StatefulWidget {
 }
 
 class _CharacterChatScreenState extends State<CharacterChatScreen> {
+  PremiumController premiumController = Get.put(PremiumController());
+
   CharacterModel? characterModel;
   String apiUrl = 'https://api.openai.com/v1/chat/completions';
   bool isTyping = false;
@@ -75,7 +70,11 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
         data: jsonEncode({
           "model": "gpt-3.5-turbo-0613",
           'messages': [
-            {'role': 'system', 'content': 'You are a ${characterModel!.name} character, always give ${characterModel!.name} related answer.'},
+            {
+              'role': 'system',
+              'content':
+                  'You are a ${characterModel!.name} character, always give ${characterModel!.name} related answer and assume as you are ${characterModel!.name}.'
+            },
             {'role': 'user', 'content': userMessage},
           ],
         }),
@@ -127,7 +126,10 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
           print('Status: $status');
           if (status == "done") {
             isListening = false;
-            sendMessage(speechText);
+
+            setState(() {
+              textController.text = speechText;
+            });
           }
         },
         onError: (error) {
@@ -268,7 +270,10 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
                               });
                             }
                           },
-                          characterModel: characterModel,
+                          aiProfile: Image.asset(
+                            characterModel!.asset,
+                            width: SizeUtils.horizontalBlockSize * 9,
+                          ),
                         );
                 },
               ),
@@ -277,7 +282,10 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: TypingView(
-                  characterModel: characterModel,
+                  aiProfile: Image.asset(
+                    characterModel!.asset,
+                    width: SizeUtils.horizontalBlockSize * 9,
+                  ),
                 ),
               ),
             Column(
@@ -320,9 +328,14 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
                       child: InkResponse(
                         radius: 25,
                         onTap: () async {
-                          final userMessage = textController.text;
-                          if (userMessage.isNotEmpty) {
-                            sendMessage(userMessage);
+                          if (premiumController.characterFreeCount.value <= 0) {
+                            premiumController.openPremiumDialog();
+                          } else {
+                            premiumController.useCount(useType: FreeCount.characterFreeCount);
+                            final userMessage = textController.text;
+                            if (userMessage.isNotEmpty) {
+                              sendMessage(userMessage);
+                            }
                           }
                         },
                         child: SvgPicture.asset(AssetsPath.sendIC),
@@ -330,243 +343,14 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
                     ),
                   ),
                 ),
-                const SubscribeNowText()
+                SubscribeNowText(
+                  screenType: FreeCount.characterFreeCount,
+                )
               ],
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class UserChatView extends StatelessWidget {
-  final String message;
-  final void Function()? speechBtnTap;
-  final bool? isSpeech;
-  const UserChatView({super.key, required this.message, required this.speechBtnTap, required this.isSpeech});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 5, bottom: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Flexible(
-            flex: 9,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 5.0),
-                    child: InkResponse(
-                      radius: 15,
-                      onTap: speechBtnTap,
-                      child: isSpeech == true
-                          ? const RippleAnimation(
-                              color: AppColor.primaryClr,
-                              delay: Duration(milliseconds: 300),
-                              repeat: true,
-                              minRadius: 25,
-                              ripplesCount: 3,
-                              duration: Duration(milliseconds: 5 * 500),
-                              child: Icon(
-                                Icons.volume_up_outlined,
-                                color: AppColor.primaryClr,
-                              ))
-                          : const Icon(
-                              Icons.volume_up_outlined,
-                              color: AppColor.inActiveButton,
-                            ),
-                    ),
-                  ),
-                ),
-                ChatBubble(
-                  clipper: ChatBubbleClipper1(type: BubbleType.sendBubble),
-                  alignment: Alignment.topRight,
-                  backGroundColor: AppColor.userPromptBgClr,
-                  elevation: 0,
-                  child: Container(
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.7,
-                    ),
-                    child: Text(
-                      message,
-                      style: const TextStyle(color: AppColor.userPromptTextClr, fontWeight: FontWeight.w500, fontSize: 14),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Flexible(
-            flex: 1,
-            child: ClipRRect(
-              child: Container(
-                width: SizeUtils.horizontalBlockSize * 9,
-                height: SizeUtils.horizontalBlockSize * 9,
-                decoration: BoxDecoration(color: AppColor.imageBgClr, borderRadius: BorderRadius.circular(100)),
-                child: Image.asset(
-                  AssetsPath.profileAvatar,
-                  width: SizeUtils.horizontalBlockSize * 9,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class AiChatView extends StatelessWidget {
-  final String message;
-  final int index;
-  final void Function()? speechBtnTap;
-  final CharacterModel? characterModel;
-  final bool? isSpeech;
-
-  const AiChatView({super.key, required this.message, required this.index, required this.speechBtnTap, this.characterModel, required this.isSpeech});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 5, bottom: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Flexible(
-            flex: 1,
-            child: ClipRRect(
-              child: Container(
-                width: SizeUtils.horizontalBlockSize * 9,
-                height: SizeUtils.horizontalBlockSize * 9,
-                decoration: BoxDecoration(color: AppColor.imageBgClr, borderRadius: BorderRadius.circular(100)),
-                child: Image.asset(
-                  characterModel!.asset,
-                  width: SizeUtils.horizontalBlockSize * 9,
-                ),
-              ),
-            ),
-          ),
-          Flexible(
-            flex: 9,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                ChatBubble(
-                  clipper: ChatBubbleClipper1(type: BubbleType.receiverBubble),
-                  backGroundColor: AppColor.aiAnsBgClr,
-                  elevation: 0,
-                  child: Container(
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.7,
-                    ),
-                    child: index == 0
-                        ? AnimatedTextKit(
-                            animatedTexts: [
-                              TypewriterAnimatedText(
-                                message,
-                                cursor: "...",
-                                textStyle: const TextStyle(color: AppColor.aiAnsTextClr, fontWeight: FontWeight.w500, fontSize: 14),
-                                speed: const Duration(milliseconds: 100),
-                              ),
-                            ],
-                            totalRepeatCount: 1,
-                          )
-                        : Text(
-                            message,
-                            style: const TextStyle(color: AppColor.aiAnsTextClr, fontWeight: FontWeight.w500, fontSize: 14),
-                          ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: InkResponse(
-                      radius: 15,
-                      onTap: speechBtnTap,
-                      child: isSpeech == true
-                          ? const RippleAnimation(
-                              color: AppColor.primaryClr,
-                              delay: Duration(milliseconds: 300),
-                              repeat: true,
-                              minRadius: 15,
-                              ripplesCount: 3,
-                              duration: Duration(milliseconds: 3 * 500),
-                              child: Icon(
-                                Icons.volume_up_outlined,
-                                color: AppColor.primaryClr,
-                              ))
-                          : const Icon(
-                              Icons.volume_up_outlined,
-                              color: AppColor.inActiveButton,
-                            ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class TypingView extends StatelessWidget {
-  final CharacterModel? characterModel;
-
-  const TypingView({
-    super.key,
-    required this.characterModel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 5, bottom: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Flexible(
-            flex: 1,
-            child: ClipRRect(
-              child: Container(
-                width: SizeUtils.horizontalBlockSize * 9,
-                height: SizeUtils.horizontalBlockSize * 9,
-                decoration: BoxDecoration(color: AppColor.imageBgClr, borderRadius: BorderRadius.circular(100)),
-                child: Image.asset(
-                  characterModel!.asset,
-                  width: SizeUtils.horizontalBlockSize * 9,
-                ),
-              ),
-            ),
-          ),
-          Flexible(
-            flex: 9,
-            child: ChatBubble(
-              clipper: ChatBubbleClipper1(type: BubbleType.receiverBubble),
-              backGroundColor: AppColor.aiAnsBgClr,
-              elevation: 0,
-              child: Container(
-                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7, maxHeight: 20),
-                  child: LoadingAnimationWidget.waveDots(
-                    color: AppColor.white,
-                    size: 30,
-                  )),
-            ),
-          ),
-        ],
+        bottomNavigationBar: PreBannerAd(),
       ),
     );
   }

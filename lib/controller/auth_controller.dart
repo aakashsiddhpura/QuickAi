@@ -39,6 +39,10 @@ class AuthController extends GetxController {
   TextEditingController forgotPasswordC = TextEditingController();
   final forgotFormKey = GlobalKey<FormState>();
 
+  // edit profile
+  TextEditingController editNameC = TextEditingController();
+  final editFormKey = GlobalKey<FormState>();
+
   clearVariable() {
     submitted = false.obs;
     loginEmailC.clear();
@@ -47,6 +51,7 @@ class AuthController extends GetxController {
     regDisplayNameC.clear();
     regPasswordC.clear();
     forgotPasswordC.clear();
+    editNameC.clear();
     regSubmitted = false.obs;
     update();
   }
@@ -78,13 +83,17 @@ class AuthController extends GetxController {
       );
       saveInFireStore();
       box.write('userData', user.value.toJson());
+      AppToast.successMessage(Validate.loginSuccessValidator);
+      Navigation.replaceAll(Routes.kMainScreen);
+      clearVariable();
       Loader.hd();
       return user.value;
     } catch (e) {
+      Loader.hd();
       print("Google sign-in error: ${e.toString()}");
       final message = mapFirebaseErrorToMessage(e as FirebaseAuthException);
       AppToast.errorMessage(message);
-      Loader.hd();
+
       return null;
     }
   }
@@ -108,15 +117,17 @@ class AuthController extends GetxController {
       box.write('userData', user.value.toJson());
 
       AppToast.successMessage(Validate.loginSuccessValidator);
+
+      Navigation.replaceAll(Routes.kMainScreen);
       clearVariable();
-      Navigation.pushNamed(Routes.kMainScreen);
       Loader.hd();
       return user.value;
     } catch (e) {
+      Loader.hd();
+
       print("Email sign-in error: ${e.toString()}");
       final message = mapFirebaseErrorToMessage(e as FirebaseAuthException);
       AppToast.errorMessage(message);
-      Loader.hd();
       return null;
     }
   }
@@ -139,18 +150,19 @@ class AuthController extends GetxController {
         box.write('userData', user.value.toJson());
         await addUserDataToFireStore(authResult.user!.uid, displayName, email);
         AppToast.successMessage(Validate.accCreatedValidator);
+
+        Navigation.replaceAll(Routes.kMainScreen);
         clearVariable();
-        Navigation.pushNamed(Routes.kMainScreen);
         Loader.hd();
         return user.value;
       }
       Loader.hd();
       return null;
     } catch (e) {
+      Loader.hd();
       print("Email registration error: ${e.toString()}");
       final message = mapFirebaseErrorToMessage(e as FirebaseAuthException);
       AppToast.toastMessage(message);
-      Loader.hd();
       return null;
     }
   }
@@ -164,8 +176,9 @@ class AuthController extends GetxController {
 
       print("Email sent");
       AppToast.successMessage(Validate.sendVeriCodeValidator);
-      clearVariable();
+
       Navigation.pop();
+      clearVariable();
     });
   }
 
@@ -183,11 +196,17 @@ class AuthController extends GetxController {
 
   // Sign out
   Future<void> signOut() async {
+    Loader.sw();
     try {
       await _auth.signOut();
       box.remove('userData');
       user.value = UserModel();
+      Loader.hd();
+      clearVariable();
+      Navigation.replaceAll(Routes.kLoginScreen);
     } catch (e) {
+      Loader.hd();
+
       print("Sign out error: ${e.toString()}");
       final message = mapFirebaseErrorToMessage(e as FirebaseAuthException);
       AppToast.errorMessage(message);
@@ -196,6 +215,8 @@ class AuthController extends GetxController {
 
   // delete account
   Future<void> deleteAccount() async {
+    Loader.sw();
+
     try {
       final currentUser = _auth.currentUser;
       if (currentUser != null) {
@@ -203,8 +224,12 @@ class AuthController extends GetxController {
         await firestore.collection('users').doc(user.value.uid).delete();
         box.remove('userData');
         user.value = UserModel();
+        Loader.hd();
+        clearVariable();
+        Navigation.replaceAll(Routes.kLoginScreen);
       }
     } catch (e) {
+      Loader.hd();
       print("Delete account error: ${e.toString()}");
       final message = mapFirebaseErrorToMessage(e as FirebaseAuthException);
       AppToast.errorMessage(message);
@@ -227,6 +252,26 @@ class AuthController extends GetxController {
         'email': user.value.email,
       });
     }
+  }
+
+  Future<void> updateProfile() async {
+    Loader.sw();
+    user.value = UserModel(
+      uid: user.value.uid,
+      displayName: editNameC.text,
+      email: user.value.email,
+    );
+    box.write('userData', user.value.toJson());
+
+    await firestore.collection('users').doc(user.value.uid).update({
+      'displayName': user.value.displayName,
+      'email': user.value.email,
+    }).then((value) {
+      Loader.hd();
+
+      Get.back();
+      AppToast.successMessage(Validate.updateProfile);
+    });
   }
 
   Future<void> addUserDataToFireStore(String uid, String displayName, String email) async {

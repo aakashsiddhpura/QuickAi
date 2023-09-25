@@ -8,6 +8,7 @@ class AppColor {
     end: Alignment(0, 1),
     colors: [Color(0xFF7268EE), Color(0xFF231C8E)],
   );
+
   static const primaryClr = Color(0xFF7268EE);
   static const secondaryClr = Color(0xffA39CF9);
   static const backgroundColor = Color(0xff1C202A);
@@ -28,4 +29,7 @@ class AppColor {
   static const userPromptTextClr = Color(0xFF121034);
   static const userPromptBgClr = Color(0xFFA49DFA);
   static const popupmenuClr = Color(0xFF323846);
+  static const premiumImageBgClr = Color(0xFF554AE7);
+  static const premiumPrimaryCr = Color(0xFF6E66DC);
+  static const green = Color(0xFF6AF03B);
 }

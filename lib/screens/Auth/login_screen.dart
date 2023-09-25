@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   autovalidateMode: authController.submitted.value ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
                   key: authController.loginFormKey,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       const Text(
                         "Welcome back!",
@@ -123,6 +123,71 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: TextStyle(color: AppColor.textColor.withOpacity(.55), fontSize: 16, fontWeight: FontWeight.w500),
                             ),
                           ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: SizeUtils.verticalBlockSize * 3),
+
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: SizeUtils.horizontalBlockSize * 25,
+                                  height: 1,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment(1.00, -0.04),
+                                      end: Alignment(-1, 0.04),
+                                      colors: [
+                                        Color(0xFF909090).withOpacity(.5),
+                                        Color(0xFF909090).withOpacity(.0),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "OR",
+                                    style: TextStyle(color: AppColor.textColor.withOpacity(.55), fontWeight: FontWeight.w400, fontSize: 13),
+                                  ),
+                                ),
+                                Container(
+                                  width: SizeUtils.horizontalBlockSize * 25,
+                                  height: 1,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment(1.00, -0.04),
+                                      end: Alignment(-1, 0.04),
+                                      colors: [
+                                        Color(0xFF909090).withOpacity(.0),
+                                        Color(0xFF909090).withOpacity(.5),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            InkWell(
+                              onTap: () {
+                                authController.signInWithGoogle();
+                              },
+                              child: Container(
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(.2),
+                                  ),
+                                ),
+                                child: SvgPicture.asset(AssetsPath.googleIc),
+                              ),
+                            ),
+                          ],
                         ),
                       )
                     ],

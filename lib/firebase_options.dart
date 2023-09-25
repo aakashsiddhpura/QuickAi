@@ -50,21 +50,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBjpR6_mpjY445t62ovAlwACY6MhKBJcdk',
-    appId: '1:779921439165:android:b9682b8e075f742b9d3ad4',
-    messagingSenderId: '779921439165',
-    projectId: 'chatpix-ai',
-    storageBucket: 'chatpix-ai.appspot.com',
+    apiKey: 'AIzaSyDy2zRGkmlw-zjftd1lSAtiHPgfNLTE4_k',
+    appId: '1:145622451662:android:1cae4c0757eb5e609e179f',
+    messagingSenderId: '145622451662',
+    projectId: 'chatpix-ai-5091f',
+    storageBucket: 'chatpix-ai-5091f.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD8yU_9_HgaPtvCdH7iUrMaL586u_O8AqI',
-    appId: '1:779921439165:ios:7ccd113b8f4863b49d3ad4',
-    messagingSenderId: '779921439165',
-    projectId: 'chatpix-ai',
-    storageBucket: 'chatpix-ai.appspot.com',
-    androidClientId: '779921439165-n10utus88sstbatqpoli2mfvk9tqgp47.apps.googleusercontent.com',
-    iosClientId: '779921439165-lo1gcj06drl0rsmt4aurmds6ra6614p8.apps.googleusercontent.com',
+    apiKey: 'AIzaSyD1QvKTXulfDy7TVwpLXBqoZQDkWOfPGZs',
+    appId: '1:145622451662:ios:4bd9c195880ca1bb9e179f',
+    messagingSenderId: '145622451662',
+    projectId: 'chatpix-ai-5091f',
+    storageBucket: 'chatpix-ai-5091f.appspot.com',
+    androidClientId: '145622451662-d8gacc2olge4ano2ca0bh9if6lg0tfab.apps.googleusercontent.com',
+    iosClientId: '145622451662-shlvlel749516bhgh3e1kq59r53ukg5u.apps.googleusercontent.com',
     iosBundleId: 'com.chatpix.ai',
   );
 }

@@ -2,18 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>145622451662-shlvlel749516bhgh3e1kq59r53ukg5u.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.145622451662-shlvlel749516bhgh3e1kq59r53ukg5u</string>
 	<key>API_KEY</key>
-	<string>AIzaSyD8yU_9_HgaPtvCdH7iUrMaL586u_O8AqI</string>
+	<string>AIzaSyD1QvKTXulfDy7TVwpLXBqoZQDkWOfPGZs</string>
 	<key>GCM_SENDER_ID</key>
-	<string>779921439165</string>
+	<string>145622451662</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.chHub</string>
+	<string>com.chatpix.ai</string>
 	<key>PROJECT_ID</key>
-	<string>chatpix-ai</string>
+	<string>chatpix-ai-5091f</string>
 	<key>STORAGE_BUCKET</key>
-	<string>chatpix-ai.appspot.com</string>
+	<string>chatpix-ai-5091f.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:779921439165:ios:63d91fc1028d1c429d3ad4</string>
+	<string>1:145622451662:ios:4bd9c195880ca1bb9e179f</string>
 </dict>
 </plist>

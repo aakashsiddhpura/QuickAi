@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_app/screens/Home/home_screen.dart';
 import 'package:fl_app/splashpage.dart';
+import 'package:flutter/animation.dart';
 import 'package:get/get.dart';
 
 import '../../screens/Auth/forgot_password_screen.dart';
@@ -7,11 +9,18 @@ import '../../screens/Auth/login_screen.dart';
 import '../../screens/Auth/register_screen.dart';
 import '../../screens/Character/character_chat_screen.dart';
 import '../../screens/Character/character_screen.dart';
+import '../../screens/Home/ai_code_generator.dart';
+import '../../screens/Home/assistant_list_screen.dart';
+import '../../screens/Home/category_chat_screen.dart';
+import '../../screens/Home/input_suggestion_screen.dart';
 import '../../screens/Image Generator/Image_generator.dart';
 import '../../screens/Image Generator/image_view_screen.dart';
+import '../../screens/Setting/edit_profile.dart';
+import '../../screens/Setting/history_screen.dart';
 import '../../screens/Setting/setting_screen.dart';
 import '../../screens/intro_screen.dart';
 import '../../screens/main_screen.dart';
+import '../../screens/premium_screen/premium_screen.dart';
 
 mixin Routes {
   static const defaultTransition = Transition.rightToLeft;
@@ -28,6 +37,13 @@ mixin Routes {
   static const String kLoginScreen = "/LoginScreen";
   static const String kRegisterScreen = "/RegisterScreen";
   static const String kForgotPasswordScreen = "/ForgotPasswordScreen";
+  static const String kEditProfile = "/EditProfile";
+  static const String kAssistantListScreen = "/AssistantListScreen";
+  static const String kHistoryScreen = "/HistoryScreen";
+  static const String kInputSuggestionScreen = "/InputSuggestionScreen";
+  static const String kCategoryChatScreen = "/CategoryChatScreen";
+  static const String kAiCodeGenerator = "/AiCodeGenerator";
+  static const String kPremiumScreen = "/PremiumScreen";
   static const String k = "/";
 
   static List<GetPage<dynamic>> routes = [
@@ -39,12 +55,16 @@ mixin Routes {
     GetPage<dynamic>(
       name: kIntroScreen,
       page: () => IntroScreen(),
-      transition: defaultTransition,
+      curve: Curves.easeIn,
+      transitionDuration: Duration(milliseconds: 1000),
+      transition: Transition.rightToLeft,
     ),
     GetPage<dynamic>(
       name: kMainScreen,
       page: () => MainScreen(),
-      transition: defaultTransition,
+      curve: Curves.easeIn,
+      transitionDuration: Duration(milliseconds: 1000),
+      transition: Transition.rightToLeft,
     ),
     GetPage<dynamic>(
       name: kHomeScreen,
@@ -69,7 +89,7 @@ mixin Routes {
     GetPage<dynamic>(
       name: kImageViewScreen,
       page: () => ImageViewScreen(),
-      transition: defaultTransition,
+      transition: Transition.fadeIn,
     ),
     GetPage<dynamic>(
       name: kCharacterChatScreen,
@@ -89,6 +109,41 @@ mixin Routes {
     GetPage<dynamic>(
       name: kForgotPasswordScreen,
       page: () => ForgotPasswordScreen(),
+      transition: defaultTransition,
+    ),
+    GetPage<dynamic>(
+      name: kEditProfile,
+      page: () => EditProfile(),
+      transition: defaultTransition,
+    ),
+    GetPage<dynamic>(
+      name: kAssistantListScreen,
+      page: () => AssistantListScreen(),
+      transition: defaultTransition,
+    ),
+    GetPage<dynamic>(
+      name: kHistoryScreen,
+      page: () => HistoryScreen(),
+      transition: defaultTransition,
+    ),
+    GetPage<dynamic>(
+      name: kInputSuggestionScreen,
+      page: () => InputSuggestionScreen(),
+      transition: defaultTransition,
+    ),
+    GetPage<dynamic>(
+      name: kCategoryChatScreen,
+      page: () => CategoryChatScreen(),
+      transition: defaultTransition,
+    ),
+    GetPage<dynamic>(
+      name: kAiCodeGenerator,
+      page: () => AiCodeGenerator(),
+      transition: defaultTransition,
+    ),
+    GetPage<dynamic>(
+      name: kPremiumScreen,
+      page: () => PremiumScreen(),
       transition: defaultTransition,
     ),
   ];

@@ -47,6 +47,7 @@ class _MyHomeState extends State<MyHome> {
       debugShowCheckedModeBanner: false,
       initialBinding: AppBinding(),
       navigatorKey: navigatorKey,
+      transitionDuration: Duration(milliseconds: 500),
       theme: ThemeData(
         primaryColor: AppColor.primaryClr,
         brightness: Brightness.light,
