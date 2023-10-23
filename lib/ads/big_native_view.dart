@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../InApp Purchase/singletons_data.dart';
 import 'call_ads.dart';
 
 typedef BigBlurViewWidgetCreatedCallback = void Function(BigViewWidgetController controller);
@@ -57,12 +60,25 @@ class PreBigNativeAd extends StatefulWidget {
 class _PreBigNativeAdState extends State<PreBigNativeAd> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: adsModel.adsShow == false ? 0 :widget.height ?? 260,
-      child: BigNativeViewWidget(
-        onBlurViewWidgetCreated: _onBigViewWidgetCreated,
-      ),
-    );
+    return ValueListenableBuilder(
+        //TODO 2nd: listen playerPointsToAdd
+        valueListenable: appData.entitlementIsActive,
+        builder: (BuildContext context, bool value, Widget? child) {
+          if (value) {
+            return SizedBox();
+          } else {
+            if (Platform.isAndroid) {
+              return SizedBox(
+                height: adsModel.adsShow == false ? 0 : widget.height ?? 260,
+                child: BigNativeViewWidget(
+                  onBlurViewWidgetCreated: _onBigViewWidgetCreated,
+                ),
+              );
+            } else {
+              return SizedBox();
+            }
+          }
+        });
   }
 
   void _onBigViewWidgetCreated(BigViewWidgetController controller) {

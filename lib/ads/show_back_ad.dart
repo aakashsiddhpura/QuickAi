@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,7 +28,7 @@ class _AdWillPopScopeState extends State<AdWillPopScope> {
   }
 
   void _showAdAndBack() async {
-    if (adsModel.adsShow == true) {
+    if (adsModel.adsShow == true && Platform.isAndroid) {
       if (adsModel.backAdsShow == true) {
         // if (CallAds().adsModel.showCustomAd == true) {
         //   CustomInter().showInter();

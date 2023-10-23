@@ -12,6 +12,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../InApp Purchase/singletons_data.dart';
+import '../controller/character_list_controller.dart';
+
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -21,6 +24,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   PremiumController premiumController = Get.put(PremiumController());
+  CharacterListController characterController = Get.put(CharacterListController());
+
   int _tabIndex = 0;
   int get tabIndex => _tabIndex;
   set tabIndex(int v) {
@@ -28,17 +33,15 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {});
   }
 
-  late PageController pageController;
-
+  var pageList = [HomeScreen(), CharacterScreen(), ImageGeneratorScreen(), SettingScreen()];
   @override
   void initState() {
     super.initState();
     premiumController.readAndSetFreeCount();
 
     Future.delayed(Duration(seconds: 2), () {
-      premiumController.openPremiumDialog();
+      if (appData.entitlementIsActive.value == false) premiumController.openPremiumDialog();
     });
-    pageController = PageController(initialPage: _tabIndex);
   }
 
   @override
@@ -47,57 +50,59 @@ class _MainScreenState extends State<MainScreen> {
       statusBarColor: AppColor.appBarClr,
       systemNavigationBarColor: AppColor.bottomBarClr,
     ));
-    return Scaffold(
-      backgroundColor: AppColor.backgroundColor,
-      extendBody: true,
-      bottomNavigationBar: CircleNavBar(
-          activeIcons: [
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: SvgPicture.asset(AssetsPath.homeIC),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: SvgPicture.asset(AssetsPath.roboIC),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: SvgPicture.asset(AssetsPath.imageIC),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: SvgPicture.asset(AssetsPath.settingIC),
-            ),
-          ],
-          inactiveIcons: [
-            SvgPicture.asset(AssetsPath.homeIC, color: AppColor.textColor35),
-            SvgPicture.asset(AssetsPath.roboIC, color: AppColor.textColor35),
-            SvgPicture.asset(AssetsPath.imageIC, color: AppColor.textColor35),
-            SvgPicture.asset(AssetsPath.settingIC, color: AppColor.textColor35),
-          ],
-          color: AppColor.bottomBarClr,
-          height: SizeUtils.verticalBlockSize * 8,
-          circleWidth: 55,
-          activeIndex: tabIndex,
-          onTap: (index) {
-            tabIndex = index;
-            pageController.jumpToPage(tabIndex);
-          },
-          cornerRadius: const BorderRadius.only(
-            topLeft: Radius.circular(8),
-            topRight: Radius.circular(8),
-          ),
-          shadowColor: Colors.transparent,
-          elevation: 5,
-          circleGradient: AppColor.primaryGradiant),
-      body: PageView(
-        controller: pageController,
-        onPageChanged: (v) {
-          tabIndex = v;
-        },
-        children: [HomeScreen(), CharacterScreen(), ImageGeneratorScreen(), SettingScreen()],
+    return Container(
+      color: AppColor.bottomBarClr,
+      child: SafeArea(
+        bottom: true,
+        right: false,
+        top: false,
+        left: false,
+        child: Scaffold(
+          backgroundColor: AppColor.backgroundColor,
+          extendBody: true,
+          bottomNavigationBar: CircleNavBar(
+              activeIcons: [
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: SvgPicture.asset(AssetsPath.homeIC),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: SvgPicture.asset(AssetsPath.roboIC),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: SvgPicture.asset(AssetsPath.imageIC),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: SvgPicture.asset(AssetsPath.settingIC),
+                ),
+              ],
+              inactiveIcons: [
+                SvgPicture.asset(AssetsPath.homeIC, color: AppColor.textColor35),
+                SvgPicture.asset(AssetsPath.roboIC, color: AppColor.textColor35),
+                SvgPicture.asset(AssetsPath.imageIC, color: AppColor.textColor35),
+                SvgPicture.asset(AssetsPath.settingIC, color: AppColor.textColor35),
+              ],
+              color: AppColor.bottomBarClr,
+              height: SizeUtils.verticalBlockSize * 8,
+              circleWidth: 55,
+              activeIndex: tabIndex,
+              onTap: (index) {
+                tabIndex = index;
+              },
+              cornerRadius: const BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+              shadowColor: Colors.transparent,
+              elevation: 5,
+              circleGradient: AppColor.primaryGradiant),
+          body: pageList[tabIndex],
+          resizeToAvoidBottomInset: false,
+        ),
       ),
-      resizeToAvoidBottomInset: false,
     );
   }
 }

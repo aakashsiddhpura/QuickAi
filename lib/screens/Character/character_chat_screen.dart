@@ -17,6 +17,8 @@ import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../Database/character_list_data.dart';
+import '../../InApp Purchase/singletons_data.dart';
+import '../../controller/analytics_controller.dart';
 import '../../env/env.dart';
 import '../../res/assets_path.dart';
 import '../../widget/chat_ui.dart';
@@ -95,7 +97,7 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
         Get.snackbar('Error', 'Failed to create Ai response.');
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e');
+      Get.snackbar('Error', 'Something went wrong! please try again later');
     }
   }
 
@@ -163,6 +165,8 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
   @override
   void initState() {
     characterModel = Get.arguments;
+    AnalyticsService().logEvent("Character Chat Screen", {"character": characterModel!.name});
+
     setTTSListener();
     setState(() {});
     super.initState();
@@ -246,6 +250,7 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
                               });
                             } else {
                               setState(() {
+                                tts.stop();
                                 speech = false;
                                 speechIndex = -1;
                               });
@@ -265,6 +270,7 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
                               });
                             } else {
                               setState(() {
+                                tts.stop();
                                 speech = false;
                                 speechIndex = -1;
                               });
@@ -328,7 +334,12 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
                       child: InkResponse(
                         radius: 25,
                         onTap: () async {
-                          if (premiumController.characterFreeCount.value <= 0) {
+                          if (appData.entitlementIsActive.value) {
+                            final userMessage = textController.text;
+                            if (userMessage.isNotEmpty) {
+                              sendMessage(userMessage);
+                            }
+                          } else if (premiumController.characterFreeCount.value <= 0) {
                             premiumController.openPremiumDialog();
                           } else {
                             premiumController.useCount(useType: FreeCount.characterFreeCount);

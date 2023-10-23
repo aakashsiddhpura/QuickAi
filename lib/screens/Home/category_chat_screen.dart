@@ -10,6 +10,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
+import '../../controller/analytics_controller.dart';
 import '../../env/env.dart';
 import '../../res/app_colors.dart';
 import '../../utils/navigation_utils/navigation.dart';
@@ -47,12 +48,15 @@ class _CategoryChatScreenState extends State<CategoryChatScreen> {
 
   @override
   void initState() {
-    categoryData = Get.arguments;
+    categoryData = Get.arguments["categoryData"];
     //
+    AnalyticsService().logEvent("CategoryChatScreen", {"ask_question": Get.arguments["inputText"]});
+
+    print(homeController.inputText.value);
     setTTSListener();
     setState(() {
       Future.delayed(Duration(milliseconds: 500), () {
-        sendMessage(homeController.inputText.value);
+        sendMessage(Get.arguments["inputText"]);
       });
     });
     super.initState();
@@ -89,6 +93,7 @@ class _CategoryChatScreenState extends State<CategoryChatScreen> {
                             });
                           } else {
                             setState(() {
+                              tts.stop();
                               speech = false;
                               speechIndex = -1;
                             });
@@ -108,6 +113,7 @@ class _CategoryChatScreenState extends State<CategoryChatScreen> {
                             });
                           } else {
                             setState(() {
+                              tts.stop();
                               speech = false;
                               speechIndex = -1;
                             });
@@ -205,7 +211,7 @@ class _CategoryChatScreenState extends State<CategoryChatScreen> {
         Get.snackbar('Error', 'Failed to create Ai response.');
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e');
+      Get.snackbar('Error', 'Something went wrong! please try again later');
     }
   }
 

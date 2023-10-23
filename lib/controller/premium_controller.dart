@@ -1,9 +1,14 @@
-import 'package:fl_app/ads/rewarded_ad.dart';
+import 'package:fl_app/screens/Setting/manage_subscription_plan.dart';
+import 'package:fl_app/widget/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
+import '../InApp Purchase/constant.dart';
+import '../InApp Purchase/native_dialog.dart';
+import '../InApp Purchase/singletons_data.dart';
 import '../res/app_colors.dart';
 import '../screens/premium_screen/premium_screen.dart';
 import '../utils/size_utils.dart';
@@ -64,7 +69,78 @@ class PremiumController extends GetxController {
   }
 
   void openPremiumDialog() {
-    Get.dialog(PremiumScreen());
+    buySubscription();
+    // Get.dialog(PremiumScreen());
+  }
+
+  Future<void> initPlatformState() async {
+    appData.appUserID.value = await Purchases.appUserID;
+
+    Purchases.addCustomerInfoUpdateListener((customerInfo) async {
+      appData.appUserID.value = await Purchases.appUserID;
+
+      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+      EntitlementInfo? entitlement = customerInfo.entitlements.all[entitlementID];
+      appData.entitlementIsActive.value = entitlement?.isActive ?? false;
+
+      update();
+    });
+  }
+
+  void buySubscription() async {
+    Loader.sw();
+    CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+
+    if (customerInfo.entitlements.all[entitlementID] != null && customerInfo.entitlements.all[entitlementID]?.isActive == true) {
+      Loader.hd();
+
+      /// user subscribed already
+    } else {
+      Offerings? offerings;
+      try {
+        offerings = await Purchases.getOfferings();
+
+        Loader.hd();
+      } on PlatformException catch (e) {
+        Loader.hd();
+        await showDialog(
+            context: Get.context!,
+            builder: (BuildContext context) => ShowDialogToDismiss(title: "Error", content: e.message ?? "Unknown error", buttonText: 'OK'));
+      }
+      if (offerings == null || offerings.current == null) {
+        // offerings are empty, show a message to your user
+      } else {
+        // current offering is available, show paywall
+
+        Get.dialog(PremiumScreen(
+          offering: offerings.current!,
+        ));
+      }
+    }
+  }
+
+  Future<void> manageSubscription() async {
+    Loader.sw();
+    CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+    Offerings? offerings;
+    try {
+      offerings = await Purchases.getOfferings();
+
+      Loader.hd();
+    } on PlatformException catch (e) {
+      Loader.hd();
+      await showDialog(
+          context: Get.context!,
+          builder: (BuildContext context) => ShowDialogToDismiss(title: "Error", content: e.message ?? "Unknown error", buttonText: 'OK'));
+    }
+    if (offerings == null || offerings.current == null) {
+      // offerings are empty, show a message to your user
+    } else {
+      // current offering is available, show paywall
+      Get.to(ManageSubscription(
+        offering: offerings.current!,
+      ));
+    }
   }
 
   void rewardAdDialog({required Function()? onPressed}) {
@@ -84,6 +160,7 @@ class PremiumController extends GetxController {
 
   @override
   void onInit() {
+    initPlatformState();
     setFreeCountIfNull();
     super.onInit();
   }

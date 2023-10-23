@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,21 +17,29 @@ class Navigation {
     dynamic arg,
     Map<String, String>? params,
   }) async {
-    // if (AdConstants.adsModel.showCustomAd == true) {
-    //   CustomInter().showInter(routeName: routeName, arg: arg, params: params);
-    // } else {
-    await CallAds().callInterstitialAds().then((v) async {
-      FocusManager.instance.primaryFocus?.unfocus();
-      print(v);
-      if (v == true) {
-        return await Get.toNamed<dynamic>(
-          routeName,
-          arguments: arg,
-          parameters: params,
-        );
-      }
-    });
-    // }
+    if (Platform.isAndroid) {
+      // if (AdConstants.adsModel.showCustomAd == true) {
+      //   CustomInter().showInter(routeName: routeName, arg: arg, params: params);
+      // } else {
+      await CallAds().callInterstitialAds().then((v) async {
+        FocusManager.instance.primaryFocus?.unfocus();
+        print(v);
+        if (v == true) {
+          return await Get.toNamed<dynamic>(
+            routeName,
+            arguments: arg,
+            parameters: params,
+          );
+        }
+      });
+      // }
+    } else {
+      return await Get.toNamed<dynamic>(
+        routeName,
+        arguments: arg,
+        parameters: params,
+      );
+    }
   }
 
   static void popAndPushNamed(
@@ -57,7 +66,6 @@ class Navigation {
 
   static void pop() {
     FocusManager.instance.primaryFocus?.unfocus();
-    // Get.back<dynamic>(result: data);
     Navigator.maybePop(Get.context!);
   }
 

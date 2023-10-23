@@ -22,7 +22,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: "Forgot Password", centerTitle: true, showLeading: true),
+      appBar: customAppBar(title: "Forgot Password", centerTitle: true, showLeading: true, onLeadingTap: Get.back),
       body: Column(
         children: [
           Expanded(

@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_app/controller/auth_controller.dart';
+import 'package:fl_app/controller/premium_controller.dart';
+import 'package:fl_app/controller/setiing_controller.dart';
 import 'package:fl_app/res/app_colors.dart';
 import 'package:fl_app/screens/Setting/custom_web_view.dart';
 import 'package:fl_app/utils/navigation_utils/navigation.dart';
@@ -12,6 +14,7 @@ import 'package:get/get.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../controller/analytics_controller.dart';
 import '../../res/assets_path.dart';
 import '../../res/strings_utils.dart';
 import '../../utils/size_utils.dart';
@@ -28,30 +31,14 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   AuthController authController = Get.put(AuthController());
   final InAppReview _inAppReview = InAppReview.instance;
-
-  String? privacyPolicy;
-  String? termsAndCondition;
-  String? faqS;
-
-  void getSettingData() async {
-    try {
-      final snapshot = await FirebaseFirestore.instance.collection('setting').doc("setting_data").get();
-      if (snapshot.exists) {
-        final data = snapshot.data() as Map<String, dynamic>;
-        privacyPolicy = data["privacy_policy"];
-        termsAndCondition = data["terms_and_condition"];
-        faqS = data["faqs"];
-        setState(() {});
-      }
-    } catch (e) {
-      print('Error getting ad settings: $e');
-    }
-    return null;
-  }
+  SettingController settingController = Get.put(SettingController());
+  PremiumController premiumController = Get.put(PremiumController());
 
   @override
   void initState() {
-    getSettingData();
+    settingController.getSettingData();
+    AnalyticsService().setCurrentScreen(screenName: "SettingScreen");
+
     super.initState();
   }
 
@@ -144,7 +131,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         title: "Manage Subscriptions",
                         icon: AssetsPath.manageSubIc,
                         onTap: () {
-                          Get.dialog(PremiumScreen());
+                          premiumController.manageSubscription();
                         }),
                     settingTile(
                         title: "Rate App",
@@ -158,26 +145,34 @@ class _SettingScreenState extends State<SettingScreen> {
                         title: "Share App with Friends",
                         icon: AssetsPath.shareIc,
                         onTap: () async {
-                          await Share.share("https://play.google.com/store/apps/details?id=${AppString.kPackageName}");
+                          await Share.share(
+                            "🤖 AI Chat & Image Creation 🖼️\n\nChat with a ChatPix AI and create stunning images in one app.\n\n🗨️ Engage in dynamic conversations.\n🎨 Generate unique artworks effortlessly.\n\n\nUnlock the power of AI today!\n\n👉 Get it now: https://play.google.com/store/apps/details?id=${AppString.kPackageName}",
+                          );
                         },
                         iconColor: AppColor.white.withOpacity(.6)),
                     settingTile(
                         title: "Privacy Policy",
                         icon: AssetsPath.privacyPolicyIc,
                         onTap: () {
-                          if (privacyPolicy!.isNotEmpty) Get.to<dynamic>(CustomWebView(url: privacyPolicy, pageName: "Privacy Policy"));
+                          if (settingController.privacyPolicy != null && settingController.privacyPolicy != "") {
+                            Get.to<dynamic>(CustomWebView(url: settingController.privacyPolicy, pageName: "Privacy Policy"));
+                          }
                         }),
                     settingTile(
                         title: "Terms & Conditions",
                         icon: AssetsPath.termsIc,
                         onTap: () {
-                          if (termsAndCondition!.isNotEmpty) Get.to<dynamic>(CustomWebView(url: termsAndCondition, pageName: "Terms & Conditions"));
+                          if (settingController.termsAndCondition != null && settingController.termsAndCondition != "") {
+                            Get.to<dynamic>(CustomWebView(url: settingController.termsAndCondition, pageName: "Terms & Conditions"));
+                          }
                         }),
                     settingTile(
                         title: "FAQs",
                         icon: AssetsPath.faqsIc,
                         onTap: () {
-                          if (faqS!.isNotEmpty) Get.to<dynamic>(CustomWebView(url: faqS, pageName: "FAQs"));
+                          if (settingController.faqS != null && settingController.faqS != "") {
+                            Get.to<dynamic>(CustomWebView(url: settingController.faqS, pageName: "FAQs"));
+                          }
                         }),
                     if (authController.user.value.uid.isNotEmpty)
                       settingTile(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../../controller/analytics_controller.dart';
 import '../../controller/auth_controller.dart';
 import '../../controller/home_controller.dart';
 import '../../res/app_colors.dart';
@@ -22,6 +23,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
   AuthController authController = Get.put(AuthController());
   HomeController homeController = Get.put(HomeController());
   @override
+  void initState() {
+    // TODO: implement initState
+    AnalyticsService().setCurrentScreen(screenName: "HistoryScreen");
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(title: "History", showLeading: true, centerTitle: true),
@@ -39,7 +48,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
           if (authController.user.value.uid.isNotEmpty)
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection('user_prompt_history').doc(authController.user.value.uid).collection('answers_and_questions').snapshots(),
+                  stream: FirebaseFirestore.instance
+                      .collection('user_prompt_history')
+                      .doc(authController.user.value.uid)
+                      .collection('answers_and_questions')
+                      .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return MyLoader();
@@ -69,7 +82,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               children: [
                                 Container(
                                   width: double.infinity,
-                                  padding: EdgeInsets.symmetric(horizontal: SizeUtils.horizontalBlockSize * 4, vertical: SizeUtils.horizontalBlockSize * 3),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: SizeUtils.horizontalBlockSize * 4, vertical: SizeUtils.horizontalBlockSize * 3),
                                   decoration: BoxDecoration(color: AppColor.aiAnsBgClr),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,7 +107,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                 ),
                                 Container(
                                   width: double.infinity,
-                                  padding: EdgeInsets.symmetric(horizontal: SizeUtils.horizontalBlockSize * 4, vertical: SizeUtils.horizontalBlockSize * 3),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: SizeUtils.horizontalBlockSize * 4, vertical: SizeUtils.horizontalBlockSize * 3),
                                   decoration: BoxDecoration(color: AppColor.buttonSelectionClr),
                                   child: Text(
                                     data.answer,

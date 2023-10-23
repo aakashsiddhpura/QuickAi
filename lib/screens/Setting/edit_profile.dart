@@ -5,6 +5,7 @@ import 'package:fl_app/widget/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../controller/analytics_controller.dart';
 import '../../res/strings_utils.dart';
 import '../../widget/button.dart';
 import '../../widget/custom_textfield.dart';
@@ -23,6 +24,8 @@ class _EditProfileState extends State<EditProfile> {
   void initState() {
     // TODO: implement initState
     authController.editNameC.text = authController.user.value.displayName;
+    AnalyticsService().setCurrentScreen(screenName: "EditProfile");
+
     super.initState();
   }
 

@@ -17,6 +17,7 @@ import '../../screens/Image Generator/Image_generator.dart';
 import '../../screens/Image Generator/image_view_screen.dart';
 import '../../screens/Setting/edit_profile.dart';
 import '../../screens/Setting/history_screen.dart';
+import '../../screens/Setting/manage_subscription_plan.dart';
 import '../../screens/Setting/setting_screen.dart';
 import '../../screens/intro_screen.dart';
 import '../../screens/main_screen.dart';
@@ -44,6 +45,7 @@ mixin Routes {
   static const String kCategoryChatScreen = "/CategoryChatScreen";
   static const String kAiCodeGenerator = "/AiCodeGenerator";
   static const String kPremiumScreen = "/PremiumScreen";
+  static const String kManageSubscription = "/ManageSubscription";
   static const String k = "/";
 
   static List<GetPage<dynamic>> routes = [
@@ -89,6 +91,7 @@ mixin Routes {
     GetPage<dynamic>(
       name: kImageViewScreen,
       page: () => ImageViewScreen(),
+      transitionDuration: Duration(seconds: 1),
       transition: Transition.fadeIn,
     ),
     GetPage<dynamic>(
@@ -144,6 +147,11 @@ mixin Routes {
     GetPage<dynamic>(
       name: kPremiumScreen,
       page: () => PremiumScreen(),
+      transition: defaultTransition,
+    ),
+    GetPage<dynamic>(
+      name: kManageSubscription,
+      page: () => ManageSubscription(),
       transition: defaultTransition,
     ),
   ];

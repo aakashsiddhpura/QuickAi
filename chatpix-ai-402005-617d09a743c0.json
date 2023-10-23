@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "chatpix-ai-402005",
+  "private_key_id": "617d09a743c0188b8fec198587888b69d5f26b4e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDDcxsVd0b3f7dM\nyQJGxQ04se/FT+HQ1fyzUW9UXHNVlDWKrGGU0160Z0xxQ5JBhD+Dk7VAYhqDyaYN\nJiYW0s4MF6Nr/U3LM1T/o9TXLzTaL5Yy4pBq4UTBckHUOImA3m6ziaBwISnxmzde\nNEOnZ7AOLLIxoO3eGtdfJ7tVFGjJCtwNEA/dJAzJaH3zrlMuj/w1/L7Iq8un8oP1\n96s/q0NkInTik5IdBtvKGHf5pTqSyR2xnPv+NPItLZq276dgWbjs6jimfD8c8Li6\nkSrcWC/6P1cjg3VVmLl5zugpgcBIguZNu+hlpuLOFw2ZBBKoxk6mDv1SomG0bwZZ\ne3W9Hda9AgMBAAECggEAVuASoVN/2WJNDRXp66AKFPHOpHMx6hw7s08Wv7ZKU7dJ\np0ahJ0Bev6yMx2mkGHgarTcaITCaHYsjwoN6+bkg+jIFo2oXyqMZ/HmLkUx73yG4\nzwxy6fcQkzXgud6ZjA0Swr4BcOXk2W5HSZnMmpwVnu9SE4o3QPrIUZT9CT/Fpdpl\ng159shnyvb5XA9/H6sfCAaDNAe7Xb0Z5yCXRPVG8GEdLwvQr1IPXo0flTgiC6apT\noaHVe96pTcv2G6KLAkMyDmopTKaqhZcB/28GzMgimlGJyYluh9rOZX0kDZPJIlzd\npJWpAjWOl42ItqYbc5FexTZwdz/fM/HXoJqItM6tFwKBgQDgeJ5m0pCPFseji+9d\nyGtLkP755cH7KIwtaeC79jkny8rZfjAQg0NvHZcj7go/+QveKpk6HpeIewfK+bP7\nGGOzKXfXAYRuzOI1mb9KIoHauUnx2tQZDJ/MmDr5ZkqzIlyu9WmXpOH+XaxA11T7\nORzb0ncNgAVUk9bNm6+pKQfmgwKBgQDe5vNRiJmJ3zWXxJ/GrCW2GBXmXMPmTLzM\nd+yv7IaO7eCOGRkGbiNV+Sd4R2+cQ4bG+3KeD3kpIoo99lvBwIJY3dk6+WrAQBWL\n2LEYrToayq3Z7Uq3AYAryapPoHbTBgvsHYyCT1Y/jpS+KHUPEGRv/v3MIyBksoYl\n/hnlThTJvwKBgH42M9JamJ9rzop9lvQjSXjuqP73ma9PaCnsu0jUM+TVaFQL6JiQ\nRa1HdQDlyeuYa3zadNdB9i/uBT6yUelgGEbXjSNeHglyt8otjWnwpxTFU/dh9Bm1\niHAwNBCg3GWGb5iMMnfqZItyPfUjXgv3W+uZlgkIL3cTvRZUcFtrz55jAoGBALln\ngJwg8xUrBHjoo72tEvETt6OVJZ051xB77/Ok2YepdU68sYQXuGyagaoaQUvJHyID\npKK0XCNLB5HiiQ/wAHvKjBXxwEmJBGL+KtBLxjjivRi3t53hMas6Yt84qZ19Og17\nxpPdSfAzuKUzIasWB3TgtFpIHXmkxNB1OzTwbXohAoGAW9/ocsFlM4VsDxxA+OTm\nafb6D+Zo8Ab9AYZqX0nox5K5+Npj7aOyX3YH1NMKXjvwlZS4MJkZk6buRcVt6gXS\ny2cnpLBAr3U/hSpuWfJepnw7dLfAZLk+Ka1PoeS21RkZ4xYC3aJtOuuzITyJ+o4Y\nvKQfn0JTi1ujm/0OFAbrELU=\n-----END PRIVATE KEY-----\n",
+  "client_email": "chatpix-serviceac@chatpix-ai-402005.iam.gserviceaccount.com",
+  "client_id": "100915252569475194816",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/chatpix-serviceac%40chatpix-ai-402005.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

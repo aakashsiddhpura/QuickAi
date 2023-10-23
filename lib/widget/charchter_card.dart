@@ -4,6 +4,7 @@ import 'package:fl_app/utils/size_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../Database/character_list_data.dart';
+import '../InApp Purchase/singletons_data.dart';
 
 class CharacterCard extends StatelessWidget {
   final CharacterModel character;
@@ -30,7 +31,8 @@ class CharacterCard extends StatelessWidget {
                   child: Container(
                     width: SizeUtils.horizontalBlockSize * 15,
                     height: SizeUtils.horizontalBlockSize * 15,
-                    decoration: BoxDecoration(color: isSelected ? AppColor.secondaryClr.withOpacity(0.3) : AppColor.imageBgClr, borderRadius: BorderRadius.circular(1000)),
+                    decoration: BoxDecoration(
+                        color: isSelected ? AppColor.secondaryClr.withOpacity(0.3) : AppColor.imageBgClr, borderRadius: BorderRadius.circular(1000)),
                     child: Image.asset(character.asset),
                   ),
                 ),
@@ -40,7 +42,7 @@ class CharacterCard extends StatelessWidget {
                 ),
               ],
             ),
-            if (character.lock)
+            if (character.lock && appData.entitlementIsActive.value == false)
               Align(
                 alignment: Alignment.topRight,
                 child: Padding(

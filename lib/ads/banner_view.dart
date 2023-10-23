@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../InApp Purchase/singletons_data.dart';
 import 'call_ads.dart';
 
 typedef BlurBannerViewWidgetCreatedCallback = void Function(BlurBannerViewWidgetController controller);
@@ -50,12 +52,25 @@ class PreBannerAd extends StatefulWidget {
 class _PreBannerAdState extends State<PreBannerAd> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: adsModel.adsShow == false ? 0 : widget.height ?? 70,
-      child: BlurViewBannerWidget(
-        onBlurBannerViewWidgetCreated: _onBannerViewWidgetCreated,
-      ),
-    );
+    return ValueListenableBuilder(
+        //TODO 2nd: listen playerPointsToAdd
+        valueListenable: appData.entitlementIsActive,
+        builder: (BuildContext context, bool value, Widget? child) {
+          if (value) {
+            return SizedBox();
+          } else {
+            if (Platform.isAndroid) {
+              return SizedBox(
+                height: adsModel.adsShow == false ? 0 : widget.height ?? 70,
+                child: BlurViewBannerWidget(
+                  onBlurBannerViewWidgetCreated: _onBannerViewWidgetCreated,
+                ),
+              );
+            } else {
+              return SizedBox();
+            }
+          }
+        });
   }
 
   void _onBannerViewWidgetCreated(BlurBannerViewWidgetController controller) {

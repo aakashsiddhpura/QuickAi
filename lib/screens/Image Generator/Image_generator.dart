@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../../InApp Purchase/singletons_data.dart';
+import '../../controller/analytics_controller.dart';
 import '../../model/dall_e_model.dart';
 import '../premium_screen/subscribe_now_widget.dart';
 
@@ -39,6 +41,13 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
 
   static const List<String> imageSizes = ["256x256", "512x512", "1024x1024"];
   PremiumController premiumController = Get.put(PremiumController());
+  @override
+  void initState() {
+    // TODO: implement initState
+    AnalyticsService().setCurrentScreen(screenName: "ImageGeneratorScreen");
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,10 +79,14 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
                     if (!currentFocus.hasPrimaryFocus) {
                       currentFocus.unfocus();
                     }
-                    if (premiumController.imageFreeCount.value <= 0) {
+                    if (appData.entitlementIsActive.value) {
+                      await generateImages(promptController.text);
+                    } else if (premiumController.imageFreeCount.value <= 0) {
                       premiumController.openPremiumDialog();
                     } else {
                       premiumController.useCount(useType: FreeCount.imageFreeCount);
+                      AnalyticsService().logEvent("ImageGenerate", {"image_prompt": promptController.text});
+
                       await generateImages(promptController.text);
                     }
                   },
@@ -92,9 +105,15 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
                     size: size,
                     isSelected: selectedSize == size,
                     onPressed: () {
-                      setState(() {
-                        selectedSize = size;
-                      });
+                      if (appData.entitlementIsActive.value) {
+                        setState(() {
+                          selectedSize = size;
+                        });
+                      } else {
+                        if (size != imageSizes[0]) {
+                          premiumController.openPremiumDialog();
+                        }
+                      }
                     },
                   ),
                 );
@@ -175,7 +194,7 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
       Loader.hd();
     } catch (e) {
       Loader.hd();
-      Get.snackbar('Error', 'An error occurred: $e');
+      Get.snackbar('Error', 'Something went wrong! please try again later');
     }
   }
 }

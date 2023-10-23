@@ -1,29 +1,49 @@
 import 'dart:ui';
 
+import 'package:fl_app/controller/setiing_controller.dart';
 import 'package:fl_app/res/app_colors.dart';
 import 'package:fl_app/res/assets_path.dart';
 import 'package:fl_app/utils/size_utils.dart';
 import 'package:fl_app/widget/button.dart';
+import 'package:fl_app/widget/toast_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
+
+import '../../InApp Purchase/constant.dart';
+import '../../InApp Purchase/singletons_data.dart';
+import '../Setting/custom_web_view.dart';
 
 class PremiumScreen extends StatefulWidget {
-  const PremiumScreen({super.key});
+  final Offering? offering;
+
+  const PremiumScreen({Key? key, this.offering}) : super(key: key);
 
   @override
   State<PremiumScreen> createState() => _PremiumScreenState();
 }
 
 class _PremiumScreenState extends State<PremiumScreen> {
+  SettingController settingController = Get.put(SettingController());
   static List<PremiumPlanList> premiumList = [
-    PremiumPlanList("Weekly", "4.99"),
-    PremiumPlanList("Monthly", "17.99", save: "10"),
-    PremiumPlanList("Quarterly", "49.99", save: "16"),
-    PremiumPlanList("Yearly", "99.99", save: "58"),
+    PremiumPlanList("chatpix_499_weekly", "Weekly", "4.99"),
+    PremiumPlanList("chatpix_1799_monthly", "Monthly", "17.99", save: "10"),
+    PremiumPlanList("chatpix_4999_quarterly", "Quarterly", "49.99", save: "16"),
+    PremiumPlanList("chatpix_9999_yearly", "Yearly", "99.99", save: "58"),
   ];
 
   PremiumPlanList selectedPlan = premiumList[2];
+  var selectedProduct;
+  @override
+  void initState() {
+    if (widget.offering != null) {
+      selectedProduct = widget.offering?.availablePackages[2];
+    }
+    setState(() {});
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,36 +108,84 @@ class _PremiumScreenState extends State<PremiumScreen> {
               firstText: "Ads Free ",
               secondText: "experience",
             ),
-            Column(
-              children: premiumList.map((premiumData) {
-                return premiumListTile(
-                    duration: premiumData.duration,
-                    amount: premiumData.amount,
-                    save: premiumData.save,
-                    isSelected: selectedPlan == premiumData,
-                    onTap: () {
-                      setState(() {
-                        selectedPlan = premiumData;
-                      });
-                    });
-              }).toList(),
-            ),
+            widget.offering != null
+                ? ListView.builder(
+                    itemCount: widget.offering!.availablePackages.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var myProductList = widget.offering!.availablePackages;
+                      return premiumListTile(
+                          duration: premiumList[index].duration,
+                          amount: myProductList[index].storeProduct.priceString,
+                          save: premiumList[index].save,
+                          isSelected: selectedPlan == premiumList[index],
+                          onTap: () {
+                            setState(() {
+                              selectedPlan = premiumList[index];
+                              selectedProduct = myProductList[index];
+                            });
+                          });
+                    },
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                  )
+                : Column(
+                    children: premiumList.map((premiumData) {
+                      return premiumListTile(
+                          duration: premiumData.duration,
+                          amount: premiumData.amount,
+                          save: premiumData.save,
+                          isSelected: selectedPlan == premiumData,
+                          onTap: () {
+                            setState(() {
+                              selectedPlan = premiumData;
+                            });
+                          });
+                    }).toList(),
+                  ),
             Padding(
               padding: EdgeInsets.only(top: SizeUtils.verticalBlockSize * 3, bottom: SizeUtils.verticalBlockSize * 2),
-              child: Center(child: CustomButton(onPressed: () {}, text: "Continue")),
+              child: Center(
+                  child: CustomButton(
+                      onPressed: () async {
+                        if (widget.offering != null) {
+                          try {
+                            CustomerInfo customerInfo = await Purchases.purchasePackage(selectedProduct);
+                            EntitlementInfo? entitlement = customerInfo.entitlements.all[entitlementID];
+                            appData.entitlementIsActive.value = entitlement?.isActive ?? false;
+                          } on PlatformException catch (platformException) {
+                            AppToast.toastMessage(platformException.message.toString());
+
+                            print(platformException.message);
+                          } catch (error) {
+                            print(error);
+                          }
+                          // PlatformException(1, Purchase was cancelled., {code: 1, message: Purchase was cancelled., readableErrorCode: PurchaseCancelledError, readable_error_code: PurchaseCancelledError, underlyingErrorMessage: Error updating purchases. DebugMessage: . ErrorCode: USER_CANCELED., userCancelled: true}, null)
+                          setState(() {});
+                          Navigator.pop(context);
+                        }
+                      },
+                      text: "Continue")),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    if (settingController.privacyPolicy != null) {
+                      Get.to<dynamic>(CustomWebView(url: settingController.privacyPolicy, pageName: "Privacy Policy"));
+                    }
+                  },
                   child: Text(
                     "Privacy Policy",
                     style: TextStyle(color: AppColor.secondaryClr, fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    if (settingController.termsAndCondition != null) {
+                      Get.to<dynamic>(CustomWebView(url: settingController.termsAndCondition, pageName: "Privacy Policy"));
+                    }
+                  },
                   child: Text(
                     "Terms & Conditions",
                     style: TextStyle(color: AppColor.secondaryClr, fontSize: 16, fontWeight: FontWeight.w500),
@@ -131,6 +199,24 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 "Subscription will be charged to your payment method through your google play belling account. your subscription will automatically renew unless canceled at least 24 hours before the end of current period. Mange your subscription in account setting after purchase.",
                 style: TextStyle(color: AppColor.textColor.withOpacity(.5), fontWeight: FontWeight.w400, fontSize: 13),
                 textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Note : ",
+                    style: TextStyle(color: AppColor.textColor, fontWeight: FontWeight.w600, fontSize: 17),
+                  ),
+                  Flexible(
+                    child: Text(
+                      "You can get 1 free message by viewing reward ad.",
+                      style: TextStyle(color: AppColor.textColor.withOpacity(.7), fontWeight: FontWeight.w400, fontSize: 16),
+                    ),
+                  )
+                ],
               ),
             )
           ],
@@ -206,7 +292,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                       Row(
                         children: [
                           Text(
-                            "\$ ${amount ?? ""}",
+                            amount ?? "",
                             style: TextStyle(color: AppColor.green, fontSize: 16, fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(
@@ -246,9 +332,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
 }
 
 class PremiumPlanList {
-  final String duration;
-  final String amount;
+  final String? productId;
+  final String? duration;
+  final String? amount;
   final String? save;
 
-  PremiumPlanList(this.duration, this.amount, {this.save});
+  PremiumPlanList(this.productId, this.duration, this.amount, {this.save});
 }

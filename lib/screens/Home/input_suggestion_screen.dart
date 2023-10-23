@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../../InApp Purchase/singletons_data.dart';
+import '../../controller/analytics_controller.dart';
 import '../../controller/home_controller.dart';
 import '../../widget/button.dart';
 import '../premium_screen/subscribe_now_widget.dart';
@@ -32,6 +34,8 @@ class _InputSuggestionScreenState extends State<InputSuggestionScreen> {
     setState(() {
       categoryData = Get.arguments;
     });
+    AnalyticsService().logEvent("InputSuggestionScreen", {"selected_category": categoryData!.title});
+
     super.initState();
   }
 
@@ -44,13 +48,18 @@ class _InputSuggestionScreenState extends State<InputSuggestionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: categoryData!.title, showLeading: true, action: [
-        IconButton(
+      appBar: customAppBar(
+        title: categoryData!.title,
+        showLeading: true,
+        action: [
+          IconButton(
             onPressed: () {
               Navigation.pushNamed(Routes.kHistoryScreen);
             },
-            icon: SvgPicture.asset(AssetsPath.historyIc))
-      ]),
+            icon: SvgPicture.asset(AssetsPath.historyIc),
+          ),
+        ],
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: SizeUtils.horizontalBlockSize * 3, vertical: SizeUtils.verticalBlockSize * 1),
         child: Column(
@@ -68,12 +77,27 @@ class _InputSuggestionScreenState extends State<InputSuggestionScreen> {
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        if (premiumController.assistantFreeCount.value <= 0) {
+                        if (appData.entitlementIsActive.value) {
+                          Navigation.replace(
+                            Routes.kCategoryChatScreen,
+                            arguments: {
+                              "categoryData": categoryData,
+                              "inputText": categoryData!.questionList[index],
+                            },
+                          );
+                        } else if (premiumController.assistantFreeCount.value <= 0) {
                           premiumController.openPremiumDialog();
                         } else {
                           premiumController.useCount(useType: FreeCount.assistantFreeCount);
                           homeController.inputText.value = categoryData!.questionList[index];
-                          Navigation.replace(Routes.kCategoryChatScreen, arguments: categoryData);
+                          homeController.update();
+                          Navigation.replace(
+                            Routes.kCategoryChatScreen,
+                            arguments: {
+                              "categoryData": categoryData,
+                              "inputText": categoryData!.questionList[index],
+                            },
+                          );
                         }
                       },
                       child: Container(
@@ -99,11 +123,25 @@ class _InputSuggestionScreenState extends State<InputSuggestionScreen> {
               return CustomButton(
                 onPressed: homeController.inputText.value.isNotEmpty
                     ? () {
-                        if (premiumController.assistantFreeCount.value <= 0) {
+                        if (appData.entitlementIsActive.value) {
+                          Navigation.replace(
+                            Routes.kCategoryChatScreen,
+                            arguments: {
+                              "categoryData": categoryData,
+                              "inputText": homeController.inputText.value,
+                            },
+                          );
+                        } else if (premiumController.assistantFreeCount.value <= 0) {
                           premiumController.openPremiumDialog();
                         } else {
                           premiumController.useCount(useType: FreeCount.assistantFreeCount);
-                          Navigation.replace(Routes.kCategoryChatScreen, arguments: categoryData);
+                          Navigation.replace(
+                            Routes.kCategoryChatScreen,
+                            arguments: {
+                              "categoryData": categoryData,
+                              "inputText": homeController.inputText.value,
+                            },
+                          );
                         }
                       }
                     : null,

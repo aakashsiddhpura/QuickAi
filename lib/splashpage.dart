@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:fl_app/ads/call_ads.dart';
 import 'package:fl_app/controller/auth_controller.dart';
+import 'package:fl_app/controller/setiing_controller.dart';
 import 'package:fl_app/res/app_colors.dart';
 import 'package:fl_app/res/assets_path.dart';
 import 'package:fl_app/utils/navigation_utils/navigation.dart';
@@ -13,6 +15,7 @@ import 'package:get_storage/get_storage.dart';
 
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'ads/rewarded_ad.dart';
 import 'controller/home_controller.dart';
 import 'utils/size_utils.dart';
@@ -27,6 +30,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   AuthController authController = Get.put(AuthController());
   HomeController homeController = Get.put(HomeController());
+  SettingController settingController = Get.put(SettingController());
   RewardedAdController rewardedAdController = Get.put(RewardedAdController(), permanent: true);
 
   bool _lottieVisible = false;
@@ -34,6 +38,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
+    settingController.getSettingData();
     Future.delayed(Duration(milliseconds: 300), () {
       setState(() {
         _textVisible = true;
@@ -105,17 +110,6 @@ class _SplashPageState extends State<SplashPage> {
               ],
             ),
           )
-          // Positioned(
-          //   bottom: SizeUtils.verticalBlockSize * 8,
-          //   child: Center(
-          //     child: LoadingAnimationWidget.discreteCircle(
-          //       color: AppColor.white,
-          //       secondRingColor: AppColor.secondaryClr,
-          //       thirdRingColor: AppColor.primaryClr,
-          //       size: 50,
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
@@ -123,27 +117,21 @@ class _SplashPageState extends State<SplashPage> {
 
   Future<void> startTimeOut() async {
     await rewardedAdController.getAdsData();
-    await CallAds().getApiResponse();
+    if (Platform.isAndroid) await CallAds().getApiResponse();
     GetStorage storage = GetStorage();
     bool? newUser = storage.read("new_user");
     if (newUser == null) {
       storage.write("new_user", false);
     }
-
+    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+      print("Accepted permission: $accepted");
+    });
     Future.delayed(Duration(seconds: adsModel.adsShow == true ? 1 : 3), () {
-      // if (AdConstants.adsModel.showScreen?.b1 == true) {
-      // Navigation.replaceAll(Routes.startPage);
-      // } else if (AdConstants.adsModel.showScreen?.b2 == true) {
-      //   Navigation.replaceAll(Routes.nextPage);
-      // } else if (AdConstants.adsModel.showScreen?.b3 == true) {
-      //   Navigation.replaceAll(Routes.continuePage);
-      // } else {
       Navigation.replace(authController.user.value.uid.isNotEmpty
           ? Routes.kMainScreen
           : newUser == false
               ? Routes.kLoginScreen
               : Routes.kIntroScreen);
-      // }
     });
   }
 }

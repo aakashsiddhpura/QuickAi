@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import '../InApp Purchase/singletons_data.dart';
 import '../widget/loader.dart';
 
 var notificationRewardCollected = ValueNotifier<bool>(false);
@@ -105,7 +106,6 @@ class RewardedAdController extends GetxController {
           rewardCollected = true;
           notificationRewardCollected.value = true;
           adLoaded = false;
-          
 
           update();
           loadFBReward();
@@ -148,8 +148,6 @@ class RewardedAdController extends GetxController {
           loadAppLovinReward();
         },
         onAdReceivedRewardCallback: (ad, reward) {
-          
-
           loadAppLovinReward();
         },
       ),
@@ -161,14 +159,14 @@ class RewardedAdController extends GetxController {
     rewardCollected = false;
     notificationRewardCollected.value = false;
 
-    if (adSettings!.showAd == true) {
+    if (adSettings!.showAd == true && appData.entitlementIsActive.value == false) {
       if (admobReward!.isNotEmpty && _rewardedAd != null && adLoaded) {
         Loader.sw();
 
         await _rewardedAd?.show(onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
           rewardCollected = true;
           notificationRewardCollected.value = true;
-          
+
           update();
         });
         Loader.hd();

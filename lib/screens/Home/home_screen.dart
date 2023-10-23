@@ -9,8 +9,10 @@ import 'package:fl_app/utils/navigation_utils/routes.dart';
 import 'package:fl_app/utils/size_utils.dart';
 import 'package:fl_app/widget/custom_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../../controller/analytics_controller.dart';
 import '../../controller/auth_controller.dart';
 import '../../widget/loader.dart';
 
@@ -26,6 +28,13 @@ class _HomeScreenState extends State<HomeScreen> {
   HomeController homeController = Get.put(HomeController());
   PremiumController premiumController = Get.put(PremiumController());
   RewardedAdController reward = Get.put(RewardedAdController());
+  @override
+  void initState() {
+    // TODO: implement initState
+    AnalyticsService().setCurrentScreen(screenName: "HomeScreen");
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Get.back();
                     await reward.showRewardAd().then((value) {
                       notificationRewardCollected.addListener(() {
+                        AnalyticsService().logEvent("Reward Ad View", null);
+
                         if (notificationRewardCollected.value == true) {
                           premiumController.incrementCount();
                         }

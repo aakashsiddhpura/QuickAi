@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fl_app/res/assets_path.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -35,7 +37,7 @@ List<CharacterModel> characterList = [];
 
 class CharacterDB {
   Future<void> initializeGetStorage() async {
-    final List<dynamic>? characterListData = box.read<List<dynamic>>('characters');
+    final characterListData = box.read('characters');
     if (characterListData == null) {
       // Initialize with default data if it's the first run
       characterList = [
@@ -50,31 +52,22 @@ class CharacterDB {
         CharacterModel(asset: AssetsPath.walkingBirdIc, name: 'Walking Bird', lock: true),
         CharacterModel(asset: AssetsPath.owlIc, name: 'Owl', lock: true),
       ];
-      await box.write('characters', characterList);
+      await box.write('characters', jsonEncode(characterList));
     } else {
-      final List<dynamic>? characterListData = box.read<List<dynamic>>('characters');
-
-      if (characterListData != null) {
-        characterList = characterListData.map((data) {
-          return CharacterModel(
-            asset: data['asset'],
-            name: data['name'],
-            lock: data['lock'],
-          );
-        }).toList();
-      }
+      readCharacterListData();
     }
   }
 
   List<CharacterModel> readCharacterListData() {
-    final List<dynamic>? characterListData = box.read<List<dynamic>>('characters');
+    final decodeData = box.read('characters');
+    final List<Map<String, dynamic>>? characterListData = jsonDecode(decodeData).cast<Map<String, dynamic>>().toList();
 
     if (characterListData != null) {
       characterList = characterListData.map((data) {
         return CharacterModel(
-          asset: data['asset'],
-          name: data['name'],
-          lock: data['lock'],
+          asset: data["asset"],
+          name: data["name"],
+          lock: data["lock"],
         );
       }).toList();
       return characterList;

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../InApp Purchase/singletons_data.dart';
 import 'call_ads.dart';
 
 typedef MediumBlurViewWidgetCreatedCallback = void Function(MediumViewWidgetController controller);
@@ -56,12 +59,25 @@ class PreMediumAd extends StatefulWidget {
 class _PreMediumAdState extends State<PreMediumAd> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: adsModel.adsShow == false ? 0 : widget.height ?? 120,
-      child: MediumNativeViewWidget(
-        onBlurViewWidgetCreated: _onMediumViewWidgetCreated,
-      ),
-    );
+    return ValueListenableBuilder(
+        //TODO 2nd: listen playerPointsToAdd
+        valueListenable: appData.entitlementIsActive,
+        builder: (BuildContext context, bool value, Widget? child) {
+          if (value) {
+            return SizedBox();
+          } else {
+            if (Platform.isAndroid) {
+              return SizedBox(
+                height: adsModel.adsShow == false ? 0 : widget.height ?? 120,
+                child: MediumNativeViewWidget(
+                  onBlurViewWidgetCreated: _onMediumViewWidgetCreated,
+                ),
+              );
+            } else {
+              return SizedBox();
+            }
+          }
+        });
   }
 
   void _onMediumViewWidgetCreated(MediumViewWidgetController controller) {

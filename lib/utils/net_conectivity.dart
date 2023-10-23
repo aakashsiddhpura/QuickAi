@@ -1,5 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:fl_app/res/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class _NoConnectivityBanner extends StatelessWidget {
   @override
@@ -102,45 +104,99 @@ class ConnectivityWidgetState extends State<ConnectivityWidget> with SingleTicke
           if (isOffline!) {
             animationController.forward();
             widget.offlineCallback?.call();
+            Future.delayed(const Duration(seconds: 1), () {
+              if (!Get.isDialogOpen!) {
+                Get.dialog(
+                        name: "",
+                        WillPopScope(
+                          onWillPop: () {
+                            return Future.value(false);
+                          },
+                          child: const Scaffold(
+                            backgroundColor: AppColor.backgroundColor,
+                            body: SizedBox(
+                              width: double.infinity,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.wifi_off_rounded,
+                                    color: Colors.grey,
+                                    size: 80,
+                                  ),
+                                  SizedBox(
+                                    height: 50,
+                                  ),
+                                  Text(
+                                    "No Internet Connection",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 25),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    "No Internet connection was found.\nCheck your connection and try again.",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        barrierDismissible: false,
+                        barrierColor: Colors.black54,
+                        useSafeArea: true)
+                    .then((value) {});
+              }
+            });
           } else {
             widget.onlineCallback?.call();
             animationController.reverse();
+
+            Future.delayed(Duration(milliseconds: 500), () {
+              if (Get.isDialogOpen!) {
+                Get.back();
+              }
+            });
           }
         }
 
         return Stack(
           children: <Widget>[
             widget.builder(context, !isOffline!),
-            if (isOffline!)
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: SlideTransition(
-                  position: animationController.drive(
-                    Tween<Offset>(
-                      begin: const Offset(0.0, 1.0),
-                      end: Offset.zero,
-                    ).chain(
-                      CurveTween(curve: Curves.fastOutSlowIn),
-                    ),
-                  ),
-                  child: _NoConnectivityBanner(),
-                ),
-              )
-            else
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: SlideTransition(
-                  position: animationController.drive(
-                    Tween<Offset>(
-                      begin: const Offset(0.0, 1.0),
-                      end: Offset.zero,
-                    ).chain(
-                      CurveTween(curve: Curves.fastOutSlowIn),
-                    ),
-                  ),
-                  child: _ConnectivityBanner(),
-                ),
-              ),
+            // if (isOffline!)
+            //   Align(
+            //     alignment: Alignment.bottomCenter,
+            //     child: SlideTransition(
+            //       position: animationController.drive(
+            //         Tween<Offset>(
+            //           begin: const Offset(0.0, 1.0),
+            //           end: Offset.zero,
+            //         ).chain(
+            //           CurveTween(curve: Curves.fastOutSlowIn),
+            //         ),
+            //       ),
+            //       child: _NoConnectivityBanner(),
+            //     ),
+            //   )
+            // else
+            //   Align(
+            //     alignment: Alignment.bottomCenter,
+            //     child: SlideTransition(
+            //       position: animationController.drive(
+            //         Tween<Offset>(
+            //           begin: const Offset(0.0, 1.0),
+            //           end: Offset.zero,
+            //         ).chain(
+            //           CurveTween(curve: Curves.fastOutSlowIn),
+            //         ),
+            //       ),
+            //       child: _ConnectivityBanner(),
+            //     ),
+            //   ),
           ],
         );
       },

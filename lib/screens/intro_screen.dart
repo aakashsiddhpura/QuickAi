@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
+import '../controller/analytics_controller.dart';
 import '../controller/auth_controller.dart';
 import '../utils/navigation_utils/navigation.dart';
 import '../utils/navigation_utils/routes.dart';
@@ -44,8 +45,14 @@ class _IntroScreenState extends State<IntroScreen> {
   }
 
   List<IntroDataModel> introList = [
-    IntroDataModel(title: "Your AI assistant", description: "ChatPix AI is intended to boost your productivity by quick access to information.", image: AssetsPath.intro1Img),
-    IntroDataModel(title: "Human-like Conversations", description: "ChatPix AI understand and response to your message in a natural way.", image: AssetsPath.intro2Img),
+    IntroDataModel(
+        title: "Your AI assistant",
+        description: "ChatPix AI is intended to boost your productivity by quick access to information.",
+        image: AssetsPath.intro1Img),
+    IntroDataModel(
+        title: "Human-like Conversations",
+        description: "ChatPix AI understand and response to your message in a natural way.",
+        image: AssetsPath.intro2Img),
     IntroDataModel(title: "I can do anything", description: "I can write your essays, emails, codes, text and more.", image: AssetsPath.intro3Img),
   ];
 

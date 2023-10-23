@@ -9,7 +9,11 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../Database/character_list_data.dart';
+import '../../Database/character_list_data.dart';
+import '../../InApp Purchase/singletons_data.dart';
 import '../../ads/rewarded_ad.dart';
+import '../../controller/analytics_controller.dart';
+import '../../controller/character_list_controller.dart';
 import '../../main.dart';
 import '../../utils/size_utils.dart';
 import '../../widget/button.dart';
@@ -23,21 +27,14 @@ class CharacterScreen extends StatefulWidget {
 }
 
 class _CharacterScreenState extends State<CharacterScreen> {
-  RewardedAdController reward = Get.put(RewardedAdController());
-
-  List<CharacterModel> characterList = [];
-  int selectedIndex = 0;
-  final box = GetStorage();
-
-  Future<void> updateCharacterLock(int index, bool isLocked) async {
-    characterList[index].lock = isLocked;
-    await box.write('characters', characterList);
-  }
+  CharacterListController characterController = Get.put(CharacterListController());
 
   @override
   void initState() {
-    characterList = CharacterDB().readCharacterListData();
-    setState(() {});
+    characterController.characterList.value = CharacterDB().readCharacterListData();
+    characterController.update();
+    AnalyticsService().setCurrentScreen(screenName: "CharacterScreen");
+
     super.initState();
   }
 
@@ -54,12 +51,12 @@ class _CharacterScreenState extends State<CharacterScreen> {
               ),
               itemCount: characterList.length,
               itemBuilder: (context, index) {
-                final character = characterList[index];
+                final character = characterController.characterList[index];
                 return CharacterCard(
-                  isSelected: selectedIndex == index,
+                  isSelected: characterController.selectedIndex.value == index,
                   character: character,
                   onTap: () {
-                    if (characterList[index].lock) {
+                    if (characterList[index].lock && appData.entitlementIsActive.value == false) {
                       Get.defaultDialog(
                         title: "Watch Video to unlock character",
                         titlePadding: EdgeInsets.all(10),
@@ -73,10 +70,11 @@ class _CharacterScreenState extends State<CharacterScreen> {
                                   height: SizeUtils.horizontalBlockSize * 12,
                                   onPressed: () async {
                                     Get.back();
-                                    await reward.showRewardAd().then((value) {
+                                    await characterController.reward.showRewardAd().then((value) {
                                       notificationRewardCollected.addListener(() {
                                         if (notificationRewardCollected.value == true) {
-                                          updateCharacterLock(index, false);
+                                          characterController.updateCharacterLock(index, false);
+                                          setState(() {});
                                         }
                                       });
                                     });
@@ -91,7 +89,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
                             text: "NO"),
                       );
                     } else {
-                      selectedIndex = index;
+                      characterController.selectedIndex.value = index;
                       setState(() {});
                     }
                   },
@@ -101,7 +99,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
           ),
           CustomButton(
               onPressed: () {
-                Navigation.pushNamed(Routes.kCharacterChatScreen, arg: characterList[selectedIndex]);
+                Navigation.pushNamed(Routes.kCharacterChatScreen, arg: characterList[characterController.selectedIndex.value]);
               },
               text: "Start Chat"),
           SubscribeNowText(

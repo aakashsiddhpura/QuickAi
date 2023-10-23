@@ -15,6 +15,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../controller/analytics_controller.dart';
 import '../../res/app_colors.dart';
 
 class ImageViewScreen extends StatefulWidget {
@@ -32,6 +33,8 @@ class _ImageViewScreenState extends State<ImageViewScreen> {
     setState(() {
       imageUrl = Get.arguments;
     });
+    AnalyticsService().setCurrentScreen(screenName: "ImageViewScreen");
+
     super.initState();
   }
 
@@ -76,6 +79,7 @@ class _ImageViewScreenState extends State<ImageViewScreen> {
                 onTap: () {
                   if (imageUrl != null) {
                     downloadAndSaveImage(imageUrl ?? "");
+                    AnalyticsService().logEvent("Image Download", null);
                   }
                 },
                 child: Image.asset(AssetsPath.downloadImageBtn)),

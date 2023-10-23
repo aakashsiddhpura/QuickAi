@@ -12,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../model/user_model.dart';
 import '../widget/toast_helper.dart';
+import 'analytics_controller.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -203,6 +204,8 @@ class AuthController extends GetxController {
       user.value = UserModel();
       Loader.hd();
       clearVariable();
+      AnalyticsService().logEvent("User Logout", null);
+
       Navigation.replaceAll(Routes.kLoginScreen);
     } catch (e) {
       Loader.hd();
@@ -226,6 +229,8 @@ class AuthController extends GetxController {
         user.value = UserModel();
         Loader.hd();
         clearVariable();
+        AnalyticsService().logEvent("User DeleteAccount", null);
+
         Navigation.replaceAll(Routes.kLoginScreen);
       }
     } catch (e) {

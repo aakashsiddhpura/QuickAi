@@ -8,11 +8,14 @@ import 'package:fl_app/controller/premium_controller.dart';
 import 'package:fl_app/res/app_colors.dart';
 import 'package:fl_app/widget/button.dart';
 import 'package:fl_app/widget/custom_textfield.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
+import '../../InApp Purchase/singletons_data.dart';
+import '../../controller/analytics_controller.dart';
 import '../../env/env.dart';
 import '../../utils/size_utils.dart';
 import '../../widget/chat_ui.dart';
@@ -51,6 +54,8 @@ class _AiCodeGeneratorState extends State<AiCodeGenerator> {
   void initState() {
     categoryData = Get.arguments;
     //
+    AnalyticsService().setCurrentScreen(screenName: "AiCodeGenerator");
+
     setTTSListener();
     setState(() {});
     super.initState();
@@ -67,6 +72,7 @@ class _AiCodeGeneratorState extends State<AiCodeGenerator> {
     return Scaffold(
       appBar: customAppBar(title: categoryData!.title, showLeading: true, centerTitle: true),
       body: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.symmetric(vertical: 15),
         child: Column(
           children: [
@@ -94,7 +100,9 @@ class _AiCodeGeneratorState extends State<AiCodeGenerator> {
                       padding: EdgeInsets.only(bottom: SizeUtils.verticalBlockSize * 2, top: SizeUtils.verticalBlockSize * 2),
                       child: CustomButton(
                           onPressed: () {
-                            if (premiumController.assistantFreeCount.value <= 0) {
+                            if (appData.entitlementIsActive.value) {
+                              sendMessage(homeController.inputC.text);
+                            } else if (premiumController.assistantFreeCount.value <= 0) {
                               premiumController.openPremiumDialog();
                             } else {
                               premiumController.useCount(useType: FreeCount.assistantFreeCount);
@@ -133,6 +141,7 @@ class _AiCodeGeneratorState extends State<AiCodeGenerator> {
                             });
                           } else {
                             setState(() {
+                              tts.stop();
                               speech = false;
                               speechIndex = -1;
                             });
@@ -152,6 +161,7 @@ class _AiCodeGeneratorState extends State<AiCodeGenerator> {
                             });
                           } else {
                             setState(() {
+                              tts.stop();
                               speech = false;
                               speechIndex = -1;
                             });
@@ -244,7 +254,7 @@ class _AiCodeGeneratorState extends State<AiCodeGenerator> {
         Get.snackbar('Error', 'Failed to create Ai response.');
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred: $e');
+      Get.snackbar('Error', 'Something went wrong! please try again later');
     }
   }
 
