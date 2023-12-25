@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ak_ads_plugin/ak_ads_plugin.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:fl_app/ads/banner_view.dart';
@@ -99,13 +100,14 @@ class _AiCodeGeneratorState extends State<AiCodeGenerator> {
                       alignment: Alignment.center,
                       padding: EdgeInsets.only(bottom: SizeUtils.verticalBlockSize * 2, top: SizeUtils.verticalBlockSize * 2),
                       child: CustomButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (appData.entitlementIsActive.value) {
                               sendMessage(homeController.inputC.text);
                             } else if (premiumController.assistantFreeCount.value <= 0) {
                               premiumController.openPremiumDialog();
                             } else {
                               premiumController.useCount(useType: FreeCount.assistantFreeCount);
+                              await AkAdsPlugin().callInterstitialAds();
                               sendMessage(homeController.inputC.text);
                             }
                           },
@@ -170,8 +172,7 @@ class _AiCodeGeneratorState extends State<AiCodeGenerator> {
                         aiProfile: CachedNetworkImage(
                           imageUrl: categoryData!.image,
                           width: SizeUtils.horizontalBlockSize * 9,
-                          progressIndicatorBuilder: (context, url, downloadProgress) =>
-                              Center(child: CircularProgressIndicator(color: AppColor.primaryClr, value: downloadProgress.progress)),
+                          progressIndicatorBuilder: (context, url, downloadProgress) => Center(child: CircularProgressIndicator(color: AppColor.primaryClr, value: downloadProgress.progress)),
                           errorWidget: (context, url, error) => const Icon(Icons.error),
                         ),
                       );
@@ -184,17 +185,20 @@ class _AiCodeGeneratorState extends State<AiCodeGenerator> {
                   aiProfile: CachedNetworkImage(
                     imageUrl: categoryData!.image,
                     width: SizeUtils.horizontalBlockSize * 9,
-                    progressIndicatorBuilder: (context, url, downloadProgress) =>
-                        Center(child: CircularProgressIndicator(color: AppColor.primaryClr, value: downloadProgress.progress)),
+                    progressIndicatorBuilder: (context, url, downloadProgress) => Center(child: CircularProgressIndicator(color: AppColor.primaryClr, value: downloadProgress.progress)),
                     errorWidget: (context, url, error) => const Icon(Icons.error),
                   ),
                 ),
               ),
-            PreBannerAd()
           ],
         ),
       ),
-      bottomNavigationBar: SubscribeNowText(screenType: FreeCount.assistantFreeCount),
+      bottomNavigationBar: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        child: Column(
+          children: [SubscribeNowText(screenType: FreeCount.assistantFreeCount), BannerView()],
+        ),
+      ),
     );
   }
 
@@ -228,10 +232,7 @@ class _AiCodeGeneratorState extends State<AiCodeGenerator> {
         data: jsonEncode({
           "model": "gpt-3.5-turbo-0613",
           'messages': [
-            {
-              'role': 'system',
-              'content': 'You are world best programmer you have knowledge about all programming language, always give programming related answer.'
-            },
+            {'role': 'system', 'content': 'You are world best programmer you have knowledge about all programming language, always give programming related answer.'},
             {'role': 'user', 'content': userMessage},
           ],
         }),
@@ -251,10 +252,10 @@ class _AiCodeGeneratorState extends State<AiCodeGenerator> {
           });
         }
       } else {
-        Get.snackbar('Error', 'Failed to create Ai response.');
+        Get.snackbar('Error', 'Failed to create Ai response.', colorText: Colors.white);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Something went wrong! please try again later');
+      Get.snackbar('Error', 'Something went wrong! please try again later', colorText: Colors.white);
     }
   }
 

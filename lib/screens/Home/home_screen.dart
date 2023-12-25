@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../../ads/banner_view.dart';
 import '../../controller/analytics_controller.dart';
 import '../../controller/auth_controller.dart';
 import '../../widget/loader.dart';
@@ -83,82 +84,80 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Flexible(
-            flex: 1,
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('ai assistant category').snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return MyLoader();
-                }
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection('ai assistant category').snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return MyLoader();
+              }
 
-                List<CategoryModel> models = [];
-                var data = snapshot.data!.docs[1].data() as Map<String, dynamic>;
+              List<CategoryModel> models = [];
+              var data = snapshot.data!.docs[1].data() as Map<String, dynamic>;
 
-                for (var doc in data["category_list"]) {
-                  var model = CategoryModel(
-                    title: doc['title'],
-                    image: doc['image'],
-                    questionList: List<String>.from(doc['question_list']),
-                  );
-                  models.add(model);
-                }
+              for (var doc in data["category_list"]) {
+                var model = CategoryModel(
+                  title: doc['title'],
+                  image: doc['image'],
+                  questionList: List<String>.from(doc['question_list']),
+                );
+                models.add(model);
+              }
 
-                return GridView.builder(
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: SizeUtils.horizontalBlockSize * 4),
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 16.0, mainAxisSpacing: 16.0),
-                  itemCount: models.length,
-                  itemBuilder: (context, index) {
-                    return InkResponse(
-                      radius: 15,
-                      onTap: () {
-                        if (index == 0) {
-                          Navigation.pushNamed(Routes.kAiCodeGenerator, arg: models[index]);
-                        } else {
-                          Navigation.pushNamed(Routes.kInputSuggestionScreen, arg: models[index]);
-                        }
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: SizeUtils.horizontalBlockSize * 4, vertical: SizeUtils.horizontalBlockSize * 3),
-                        decoration: BoxDecoration(color: AppColor.buttonSelectionClr, borderRadius: BorderRadius.circular(15)),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.only(top: 10),
-                                alignment: Alignment.topCenter,
-                                child: CachedNetworkImage(
-                                  imageUrl: models[index].image,
-                                  width: SizeUtils.horizontalBlockSize * 25,
-                                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                      Center(child: CircularProgressIndicator(color: AppColor.primaryClr, value: downloadProgress.progress)),
-                                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                                ),
+              return GridView.builder(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: SizeUtils.horizontalBlockSize * 4),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 16.0, mainAxisSpacing: 16.0),
+                itemCount: models.length,
+                itemBuilder: (context, index) {
+                  return InkResponse(
+                    radius: 15,
+                    onTap: () {
+                      if (index == 0) {
+                        Navigation.pushNamed(Routes.kAiCodeGenerator, arg: models[index]);
+                      } else {
+                        Navigation.pushNamed(Routes.kInputSuggestionScreen, arg: models[index]);
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: SizeUtils.horizontalBlockSize * 4, vertical: SizeUtils.horizontalBlockSize * 3),
+                      decoration: BoxDecoration(color: AppColor.buttonSelectionClr, borderRadius: BorderRadius.circular(15)),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.only(top: 10),
+                              alignment: Alignment.topCenter,
+                              child: CachedNetworkImage(
+                                imageUrl: models[index].image,
+                                width: SizeUtils.horizontalBlockSize * 25,
+                                progressIndicatorBuilder: (context, url, downloadProgress) => Center(child: CircularProgressIndicator(color: AppColor.primaryClr, value: downloadProgress.progress)),
+                                errorWidget: (context, url, error) => const Icon(Icons.error),
                               ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  models[index].title,
-                                  style: const TextStyle(color: AppColor.textColor, fontWeight: FontWeight.w600, fontSize: 16),
-                                ),
-                                const Icon(
-                                  Icons.arrow_forward,
-                                  color: AppColor.primaryClr,
-                                )
-                              ],
-                            )
-                          ],
-                        ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                models[index].title,
+                                style: const TextStyle(color: AppColor.textColor, fontWeight: FontWeight.w600, fontSize: 16),
+                              ),
+                              const Icon(
+                                Icons.arrow_forward,
+                                color: AppColor.primaryClr,
+                              )
+                            ],
+                          )
+                        ],
                       ),
-                    );
-                  },
-                );
-              },
-            ),
+                    ),
+                  );
+                },
+              );
+            },
           ),
+          BannerView(),
           Flexible(
             flex: 2,
             child: Column(
@@ -228,8 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   models[index].title,
                                   textAlign: TextAlign.center,
                                   maxLines: 2,
-                                  style: const TextStyle(
-                                      color: AppColor.textColor70, overflow: TextOverflow.ellipsis, fontWeight: FontWeight.w400, fontSize: 12),
+                                  style: const TextStyle(color: AppColor.textColor70, overflow: TextOverflow.ellipsis, fontWeight: FontWeight.w400, fontSize: 12),
                                 )
                               ],
                             ),

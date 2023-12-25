@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ak_ads_plugin/ak_ads_plugin.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:fl_app/ads/banner_view.dart';
@@ -15,6 +16,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../InApp Purchase/singletons_data.dart';
 import '../../controller/analytics_controller.dart';
 import '../../res/app_colors.dart';
 
@@ -76,8 +78,11 @@ class _ImageViewScreenState extends State<ImageViewScreen> {
           Padding(
             padding: EdgeInsets.symmetric(vertical: SizeUtils.verticalBlockSize * 4, horizontal: SizeUtils.horizontalBlockSize * 10),
             child: InkWell(
-                onTap: () {
+                onTap: () async {
                   if (imageUrl != null) {
+                    if (!appData.entitlementIsActive.value) {
+                      await AkAdsPlugin().callInterstitialAds();
+                    }
                     downloadAndSaveImage(imageUrl ?? "");
                     AnalyticsService().logEvent("Image Download", null);
                   }
@@ -86,7 +91,7 @@ class _ImageViewScreenState extends State<ImageViewScreen> {
           )
         ],
       ),
-      bottomNavigationBar: PreBannerAd(),
+      bottomNavigationBar: BannerView(),
     );
   }
 

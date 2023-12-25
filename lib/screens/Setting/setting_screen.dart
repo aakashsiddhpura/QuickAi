@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fl_app/ads/banner_view.dart';
 import 'package:fl_app/controller/auth_controller.dart';
 import 'package:fl_app/controller/premium_controller.dart';
 import 'package:fl_app/controller/setiing_controller.dart';
@@ -107,13 +108,21 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                     );
             }),
+
             Padding(
-              padding: EdgeInsets.only(top: SizeUtils.verticalBlockSize * 2.5),
-              child: Text(
-                "Settings",
-                style: TextStyle(color: AppColor.textColor.withOpacity(.6), fontSize: 17, fontWeight: FontWeight.w500),
+              padding: EdgeInsets.only(top: SizeUtils.verticalBlockSize * 2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BannerView(),
+                  Text(
+                    "Settings",
+                    style: TextStyle(color: AppColor.textColor.withOpacity(.6),height: 2, fontSize: 17, fontWeight: FontWeight.w500),
+                  ),
+                ],
               ),
             ),
+
             Expanded(
               child: SingleChildScrollView(
                 child: Column(

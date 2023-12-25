@@ -1,4 +1,6 @@
+import 'package:ak_ads_plugin/ak_ads_plugin.dart';
 import 'package:fl_app/ads/banner_view.dart';
+import 'package:fl_app/ads/call_ads.dart';
 import 'package:fl_app/controller/premium_controller.dart';
 import 'package:fl_app/res/app_colors.dart';
 import 'package:fl_app/res/assets_path.dart';
@@ -76,7 +78,7 @@ class _InputSuggestionScreenState extends State<InputSuggestionScreen> {
                   itemCount: categoryData!.questionList.length,
                   itemBuilder: (context, index) {
                     return InkWell(
-                      onTap: () {
+                      onTap: () async {
                         if (appData.entitlementIsActive.value) {
                           Navigation.replace(
                             Routes.kCategoryChatScreen,
@@ -91,6 +93,7 @@ class _InputSuggestionScreenState extends State<InputSuggestionScreen> {
                           premiumController.useCount(useType: FreeCount.assistantFreeCount);
                           homeController.inputText.value = categoryData!.questionList[index];
                           homeController.update();
+                          await AkAdsPlugin().callInterstitialAds();
                           Navigation.replace(
                             Routes.kCategoryChatScreen,
                             arguments: {
@@ -151,7 +154,7 @@ class _InputSuggestionScreenState extends State<InputSuggestionScreen> {
               );
             }),
             SubscribeNowText(screenType: FreeCount.assistantFreeCount),
-            PreBannerAd()
+            BannerAdView()
           ],
         ),
       ),

@@ -1,55 +1,21 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:ak_ads_plugin/ads/native_ad_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../InApp Purchase/singletons_data.dart';
-import 'call_ads.dart';
 
-typedef BlurBannerViewWidgetCreatedCallback = void Function(BlurBannerViewWidgetController controller);
 
-class BlurViewBannerWidget extends StatefulWidget {
-  final BlurBannerViewWidgetCreatedCallback onBlurBannerViewWidgetCreated;
-
-  const BlurViewBannerWidget({
-    Key? key,
-    required this.onBlurBannerViewWidgetCreated,
-  }) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => _BlurViewBannerWidgetState();
-}
-
-class _BlurViewBannerWidgetState extends State<BlurViewBannerWidget> {
-  @override
-  Widget build(BuildContext context) {
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      return const AndroidView(
-        viewType: 'plugins/blur_view_banner_widget',
-      );
-    }
-    return const Text('iOS platform version is not implemented yet.');
-  }
-}
-
-class BlurBannerViewWidgetController {
-  BlurBannerViewWidgetController._(int id) : _channel = MethodChannel('plugins/blur_view_banner_widget$id');
-
-  final MethodChannel _channel;
-}
-
-class PreBannerAd extends StatefulWidget {
+class BannerView extends StatefulWidget {
   final double? height;
 
-  const PreBannerAd({super.key, this.height});
+  const BannerView({super.key, this.height});
 
   @override
-  State<PreBannerAd> createState() => _PreBannerAdState();
+  State<BannerView> createState() => _BannerViewState();
 }
 
-class _PreBannerAdState extends State<PreBannerAd> {
+class _BannerViewState extends State<BannerView> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
@@ -60,12 +26,7 @@ class _PreBannerAdState extends State<PreBannerAd> {
             return SizedBox();
           } else {
             if (Platform.isAndroid) {
-              return SizedBox(
-                height: adsModel.adsShow == false ? 0 : widget.height ?? 70,
-                child: BlurViewBannerWidget(
-                  onBlurBannerViewWidgetCreated: _onBannerViewWidgetCreated,
-                ),
-              );
+              return NativeAdView(adSize: "small");
             } else {
               return SizedBox();
             }
@@ -73,7 +34,4 @@ class _PreBannerAdState extends State<PreBannerAd> {
         });
   }
 
-  void _onBannerViewWidgetCreated(BlurBannerViewWidgetController controller) {
-    setState(() {});
-  }
 }

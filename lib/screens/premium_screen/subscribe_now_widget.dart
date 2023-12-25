@@ -31,6 +31,7 @@ class SubscribeNowText extends StatelessWidget {
                   );
                 }),
                 TextButton(
+
                   onPressed: () {
                     premiumController.openPremiumDialog();
                   },

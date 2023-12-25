@@ -1,7 +1,9 @@
+import 'package:ak_ads_plugin/ak_ads_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../InApp Purchase/singletons_data.dart';
 import '../ads/call_ads.dart';
 import '../res/app_colors.dart';
 import '../res/assets_path.dart';
@@ -36,17 +38,11 @@ PreferredSize customAppBar({Color? bgClr, required String? title, List<Widget>? 
               child: InkResponse(
                 radius: 18,
                 onTap: onLeadingTap ??
-                    () {
-                      if (adsModel.adsShow == true) {
-                        if (adsModel.backAdsShow == true) {
-                          // if (CallAds().adsModel.showCustomAd == true) {
-                          //   CustomInter().showInter();
-                          // } else {
-                          CallAds().callBackAds().then((value) {
-                            Get.back();
-                          });
-                          // }
-                        }
+                    () async {
+                      if (!appData.entitlementIsActive.value) {
+                        await AkAdsPlugin().callBackAds().then((value) {
+                          Get.back();
+                        });
                       } else {
                         Get.back();
                       }
@@ -59,7 +55,8 @@ PreferredSize customAppBar({Color? bgClr, required String? title, List<Widget>? 
   );
 }
 
-PreferredSize appBarWithProfile({Color? bgClr, required String? title, required String? userName, List<Widget>? action, bool? showLeading, void Function()? onLeadingTap, bool? centerTitle, int? leadingWith}) {
+PreferredSize appBarWithProfile(
+    {Color? bgClr, required String? title, required String? userName, List<Widget>? action, bool? showLeading, void Function()? onLeadingTap, bool? centerTitle, int? leadingWith}) {
   return PreferredSize(
     preferredSize: Size.fromHeight(SizeUtils.verticalBlockSize * 8),
     child: AppBar(

@@ -153,7 +153,7 @@ class _CategoryChatScreenState extends State<CategoryChatScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: PreBannerAd(),
+      bottomNavigationBar: BannerView(),
     );
   }
 
@@ -208,10 +208,10 @@ class _CategoryChatScreenState extends State<CategoryChatScreen> {
           });
         }
       } else {
-        Get.snackbar('Error', 'Failed to create Ai response.');
+        Get.snackbar('Error', 'Failed to create Ai response.',colorText: Colors.white);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Something went wrong! please try again later');
+      Get.snackbar('Error', 'Something went wrong! please try again later',colorText: Colors.white);
     }
   }
 

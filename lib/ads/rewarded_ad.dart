@@ -101,6 +101,7 @@ class RewardedAdController extends GetxController {
   void loadFBReward() {
     FacebookRewardedVideoAd.loadRewardedVideoAd(
       placementId: '$fbReward',
+
       listener: (result, value) {
         if (result == RewardedVideoAdResult.VIDEO_COMPLETE) {
           rewardCollected = true;

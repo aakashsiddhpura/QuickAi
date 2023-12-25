@@ -1,3 +1,4 @@
+import 'package:ak_ads_plugin/ak_ads_plugin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_app/widget/custom_appbar.dart';
 import 'package:flutter/material.dart';
@@ -48,11 +49,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           if (authController.user.value.uid.isNotEmpty)
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('user_prompt_history')
-                      .doc(authController.user.value.uid)
-                      .collection('answers_and_questions')
-                      .snapshots(),
+                  stream: FirebaseFirestore.instance.collection('user_prompt_history').doc(authController.user.value.uid).collection('answers_and_questions').snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return MyLoader();
@@ -68,63 +65,80 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       );
                     }).toList();
 
-                    return ListView.builder(
-                      padding: EdgeInsets.symmetric(horizontal: SizeUtils.horizontalBlockSize * 4),
-                      itemCount: historyList.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        final data = historyList[index];
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: SizeUtils.verticalBlockSize * 1),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: SizeUtils.horizontalBlockSize * 4, vertical: SizeUtils.horizontalBlockSize * 3),
-                                  decoration: BoxDecoration(color: AppColor.aiAnsBgClr),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    return historyList.isNotEmpty
+                        ? ListView.builder(
+                            padding: EdgeInsets.symmetric(horizontal: SizeUtils.horizontalBlockSize * 4),
+                            itemCount: historyList.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final data = historyList[index];
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: SizeUtils.verticalBlockSize * 1),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Column(
                                     children: [
-                                      Text(
-                                        data.question,
-                                        style: TextStyle(color: AppColor.aiAnsTextClr, fontWeight: FontWeight.w400, fontSize: 16),
+                                      Container(
+                                        width: double.infinity,
+                                        padding: EdgeInsets.symmetric(horizontal: SizeUtils.horizontalBlockSize * 4, vertical: SizeUtils.horizontalBlockSize * 3),
+                                        decoration: BoxDecoration(color: AppColor.aiAnsBgClr),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              data.question,
+                                              style: TextStyle(color: AppColor.aiAnsTextClr, fontWeight: FontWeight.w400, fontSize: 16),
+                                            ),
+                                            Material(
+                                              color: Colors.transparent,
+                                              child: InkResponse(
+                                                  onTap: () async {
+                                                    Loader.sw();
+                                                    await FirebaseFirestore.instance
+                                                        .collection("user_prompt_history")
+                                                        .doc(authController.user.value.uid)
+                                                        .collection("answers_and_questions")
+                                                        .doc(snapshot.data!.docs[index].reference.id.toString())
+                                                        .delete();
+                                                    Loader.hd();
+                                                    Get.snackbar("Delete Item", "History delete successfully", colorText: Colors.white);
+                                                    setState(() {});
+                                                  },
+                                                  radius: 20,
+                                                  child: SvgPicture.asset(
+                                                    AssetsPath.deleteIc,
+                                                    width: 15,
+                                                  )),
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                      Material(
-                                        color: Colors.transparent,
-                                        child: InkResponse(
-                                            onTap: () {},
-                                            radius: 20,
-                                            child: SvgPicture.asset(
-                                              AssetsPath.deleteIc,
-                                              width: 15,
-                                            )),
+                                      Container(
+                                        width: double.infinity,
+                                        padding: EdgeInsets.symmetric(horizontal: SizeUtils.horizontalBlockSize * 4, vertical: SizeUtils.horizontalBlockSize * 3),
+                                        decoration: BoxDecoration(color: AppColor.buttonSelectionClr),
+                                        child: Text(
+                                          data.answer,
+                                          style: TextStyle(color: AppColor.textColor70, fontWeight: FontWeight.w400, fontSize: 15),
+                                        ),
                                       )
                                     ],
                                   ),
                                 ),
-                                Container(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: SizeUtils.horizontalBlockSize * 4, vertical: SizeUtils.horizontalBlockSize * 3),
-                                  decoration: BoxDecoration(color: AppColor.buttonSelectionClr),
-                                  child: Text(
-                                    data.answer,
-                                    style: TextStyle(color: AppColor.textColor70, fontWeight: FontWeight.w400, fontSize: 15),
-                                  ),
-                                )
-                              ],
+                              );
+                            },
+                          )
+                        : Center(
+                            child: Text(
+                              "No History Data",
+                              style: TextStyle(color: AppColor.textColor, fontWeight: FontWeight.w700, fontSize: 26),
                             ),
-                          ),
-                        );
-                      },
-                    );
+                          );
                   }),
             ),
         ],
       ),
+      // bottomNavigationBar: NativeAdView(adSize: "medium"),
     );
   }
 }

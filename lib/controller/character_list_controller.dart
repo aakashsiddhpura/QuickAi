@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -13,7 +15,7 @@ class CharacterListController extends GetxController {
 
   Future<void> updateCharacterLock(int index, bool isLocked) async {
     characterList[index].lock = isLocked;
-    await box.write('characters', characterList);
+    await box.write('characters',  jsonEncode(characterList));
     update();
   }
 

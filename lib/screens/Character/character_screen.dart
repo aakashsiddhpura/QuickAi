@@ -11,6 +11,7 @@ import 'package:get_storage/get_storage.dart';
 import '../../Database/character_list_data.dart';
 import '../../Database/character_list_data.dart';
 import '../../InApp Purchase/singletons_data.dart';
+import '../../ads/banner_view.dart';
 import '../../ads/rewarded_ad.dart';
 import '../../controller/analytics_controller.dart';
 import '../../controller/character_list_controller.dart';
@@ -44,6 +45,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
       appBar: customAppBar(title: "Select Character", leadingWith: 0),
       body: Column(
         children: [
+          BannerView(),
           Expanded(
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -97,11 +99,15 @@ class _CharacterScreenState extends State<CharacterScreen> {
               },
             ),
           ),
-          CustomButton(
-              onPressed: () {
-                Navigation.pushNamed(Routes.kCharacterChatScreen, arg: characterList[characterController.selectedIndex.value]);
-              },
-              text: "Start Chat"),
+
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: CustomButton(
+                onPressed: () {
+                  Navigation.pushNamed(Routes.kCharacterChatScreen, arg: characterList[characterController.selectedIndex.value]);
+                },
+                text: "Start Chat"),
+          ),
           SubscribeNowText(
             screenType: FreeCount.characterFreeCount,
           )

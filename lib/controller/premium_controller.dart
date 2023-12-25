@@ -49,7 +49,7 @@ class PremiumController extends GetxController {
   void incrementCount() {
     _box.write(FreeCount.assistantFreeCount.toString(), assistantFreeCount.value + 1);
     _box.write(FreeCount.characterFreeCount.toString(), characterFreeCount.value + 1);
-    _box.write(FreeCount.imageFreeCount.toString(), imageFreeCount.value + 1);
+    // _box.write(FreeCount.imageFreeCount.toString(), imageFreeCount.value + 1);
     readAndSetFreeCount();
   }
 
@@ -103,9 +103,7 @@ class PremiumController extends GetxController {
         Loader.hd();
       } on PlatformException catch (e) {
         Loader.hd();
-        await showDialog(
-            context: Get.context!,
-            builder: (BuildContext context) => ShowDialogToDismiss(title: "Error", content: e.message ?? "Unknown error", buttonText: 'OK'));
+        await showDialog(context: Get.context!, builder: (BuildContext context) => ShowDialogToDismiss(title: "Error", content: e.message ?? "Unknown error", buttonText: 'OK'));
       }
       if (offerings == null || offerings.current == null) {
         // offerings are empty, show a message to your user
@@ -129,9 +127,7 @@ class PremiumController extends GetxController {
       Loader.hd();
     } on PlatformException catch (e) {
       Loader.hd();
-      await showDialog(
-          context: Get.context!,
-          builder: (BuildContext context) => ShowDialogToDismiss(title: "Error", content: e.message ?? "Unknown error", buttonText: 'OK'));
+      await showDialog(context: Get.context!, builder: (BuildContext context) => ShowDialogToDismiss(title: "Error", content: e.message ?? "Unknown error", buttonText: 'OK'));
     }
     if (offerings == null || offerings.current == null) {
       // offerings are empty, show a message to your user
@@ -149,12 +145,7 @@ class PremiumController extends GetxController {
       titlePadding: EdgeInsets.all(10),
       content: SizedBox(),
       confirm: CustomButton(width: SizeUtils.horizontalBlockSize * 35, height: SizeUtils.horizontalBlockSize * 12, onPressed: onPressed, text: "YES"),
-      cancel: CustomButton(
-          width: SizeUtils.horizontalBlockSize * 35,
-          buttonColor: AppColor.inActiveButton,
-          height: SizeUtils.horizontalBlockSize * 12,
-          onPressed: Get.back,
-          text: "NO"),
+      cancel: CustomButton(width: SizeUtils.horizontalBlockSize * 35, buttonColor: AppColor.inActiveButton, height: SizeUtils.horizontalBlockSize * 12, onPressed: Get.back, text: "NO"),
     );
   }
 

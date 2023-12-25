@@ -14,6 +14,7 @@ import 'package:get/get.dart';
 
 import '../InApp Purchase/singletons_data.dart';
 import '../controller/character_list_controller.dart';
+import '../widget/exit_popup.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -50,57 +51,66 @@ class _MainScreenState extends State<MainScreen> {
       statusBarColor: AppColor.appBarClr,
       systemNavigationBarColor: AppColor.bottomBarClr,
     ));
-    return Container(
-      color: AppColor.bottomBarClr,
-      child: SafeArea(
-        bottom: true,
-        right: false,
-        top: false,
-        left: false,
-        child: Scaffold(
-          backgroundColor: AppColor.backgroundColor,
-          extendBody: true,
-          bottomNavigationBar: CircleNavBar(
-              activeIcons: [
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: SvgPicture.asset(AssetsPath.homeIC),
+    return WillPopScope(
+      onWillPop: () async {
+        bool exit = await showDialog(
+          context: context,
+          builder: (context) => ExitPopup(),
+        );
+        return exit ?? false;
+      },
+      child: Container(
+        color: AppColor.bottomBarClr,
+        child: SafeArea(
+          bottom: true,
+          right: false,
+          top: false,
+          left: false,
+          child: Scaffold(
+            backgroundColor: AppColor.backgroundColor,
+            extendBody: true,
+            bottomNavigationBar: CircleNavBar(
+                activeIcons: [
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: SvgPicture.asset(AssetsPath.homeIC),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: SvgPicture.asset(AssetsPath.roboIC),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: SvgPicture.asset(AssetsPath.imageIC),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: SvgPicture.asset(AssetsPath.settingIC),
+                  ),
+                ],
+                inactiveIcons: [
+                  SvgPicture.asset(AssetsPath.homeIC, color: AppColor.textColor35),
+                  SvgPicture.asset(AssetsPath.roboIC, color: AppColor.textColor35),
+                  SvgPicture.asset(AssetsPath.imageIC, color: AppColor.textColor35),
+                  SvgPicture.asset(AssetsPath.settingIC, color: AppColor.textColor35),
+                ],
+                color: AppColor.bottomBarClr,
+                height: SizeUtils.verticalBlockSize * 8,
+                circleWidth: 55,
+                activeIndex: tabIndex,
+                onTap: (index) {
+                  tabIndex = index;
+                },
+                cornerRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: SvgPicture.asset(AssetsPath.roboIC),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: SvgPicture.asset(AssetsPath.imageIC),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: SvgPicture.asset(AssetsPath.settingIC),
-                ),
-              ],
-              inactiveIcons: [
-                SvgPicture.asset(AssetsPath.homeIC, color: AppColor.textColor35),
-                SvgPicture.asset(AssetsPath.roboIC, color: AppColor.textColor35),
-                SvgPicture.asset(AssetsPath.imageIC, color: AppColor.textColor35),
-                SvgPicture.asset(AssetsPath.settingIC, color: AppColor.textColor35),
-              ],
-              color: AppColor.bottomBarClr,
-              height: SizeUtils.verticalBlockSize * 8,
-              circleWidth: 55,
-              activeIndex: tabIndex,
-              onTap: (index) {
-                tabIndex = index;
-              },
-              cornerRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
-              ),
-              shadowColor: Colors.transparent,
-              elevation: 5,
-              circleGradient: AppColor.primaryGradiant),
-          body: pageList[tabIndex],
-          resizeToAvoidBottomInset: false,
+                shadowColor: Colors.transparent,
+                elevation: 5,
+                circleGradient: AppColor.primaryGradiant),
+            body: pageList[tabIndex],
+            resizeToAvoidBottomInset: false,
+          ),
         ),
       ),
     );

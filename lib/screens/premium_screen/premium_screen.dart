@@ -105,6 +105,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
               secondText: "for question & answers",
             ),
             detailTile(
+              firstText: "Generate 4 ",
+              secondText: "different images from 1 prompt",
+            ),
+            detailTile(
               firstText: "Ads Free ",
               secondText: "experience",
             ),

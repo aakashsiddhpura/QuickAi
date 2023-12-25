@@ -1,9 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:ak_ads_plugin/ak_ads_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../InApp Purchase/singletons_data.dart';
 import '../../ads/call_ads.dart';
 
 class Navigation {
@@ -17,24 +19,23 @@ class Navigation {
     dynamic arg,
     Map<String, String>? params,
   }) async {
-    if (Platform.isAndroid) {
-      // if (AdConstants.adsModel.showCustomAd == true) {
-      //   CustomInter().showInter(routeName: routeName, arg: arg, params: params);
-      // } else {
-      await CallAds().callInterstitialAds().then((v) async {
-        FocusManager.instance.primaryFocus?.unfocus();
-        print(v);
-        if (v == true) {
-          return await Get.toNamed<dynamic>(
-            routeName,
-            arguments: arg,
-            parameters: params,
-          );
-        }
-      });
-      // }
-    } else {
-      return await Get.toNamed<dynamic>(
+    if (!appData.entitlementIsActive.value) {
+      if (Platform.isAndroid) {
+        await AkAdsPlugin().callInterstitialAds().then((v) async {
+          FocusManager.instance.primaryFocus?.unfocus();
+          print(v);
+          if (v == true) {
+            return await Get.toNamed<dynamic>(
+              routeName,
+              arguments: arg,
+              parameters: params,
+            );
+          }
+        });
+      }
+    }
+    else {
+      Get.toNamed<dynamic>(
         routeName,
         arguments: arg,
         parameters: params,

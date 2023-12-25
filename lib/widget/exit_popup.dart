@@ -1,7 +1,8 @@
+import 'package:ak_ads_plugin/ak_ads_plugin.dart';
+import 'package:fl_app/InApp%20Purchase/singletons_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../ads/native_ad_with_size.dart';
 import '../res/app_colors.dart';
 import '../utils/size_utils.dart';
 
@@ -29,12 +30,12 @@ class ExitPopup extends StatelessWidget {
                   children: [
                     Text(
                       'Are you sure you want to exit?',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
                     ),
                     SizedBox(
                       height: SizeUtils.verticalBlockSize * 1.5,
                     ),
-                    NativeAd(),
+                  if(appData.entitlementIsActive.value)  NativeAdView(),
                     SizedBox(
                       height: SizeUtils.verticalBlockSize * 1.5,
                     ),
@@ -53,10 +54,10 @@ class ExitPopup extends StatelessWidget {
                                 height: SizeUtils.verticalBlockSize * 7,
                                 width: SizeUtils.horizontalBlockSize * 35,
                                 alignment: Alignment.center,
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.red),
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppColor.imageBgClr),
                                 child: Text(
                                   "No",
-                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
                                 ),
                               ),
                             ),
@@ -70,10 +71,10 @@ class ExitPopup extends StatelessWidget {
                                 height: SizeUtils.verticalBlockSize * 7,
                                 width: SizeUtils.horizontalBlockSize * 35,
                                 alignment: Alignment.center,
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.green),
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppColor.primaryClr),
                                 child: const Text(
                                   "Yes",
-                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
                                 ),
                               ),
                             ),

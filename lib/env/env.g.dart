@@ -7,5 +7,5 @@ part of 'env.dart';
 // **************************************************************************
 
 class _Env {
-  static const String key = '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';
+  static String key = adModel.aPPSETTINGS!.chatGptApikey ?? "";
 }

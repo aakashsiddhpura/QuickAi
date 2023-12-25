@@ -1,3 +1,4 @@
+import 'package:ak_ads_plugin/ak_ads_plugin.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:fl_app/ads/banner_view.dart';
@@ -54,7 +55,7 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
     return Scaffold(
       appBar: customAppBar(title: "ChatPix AI Image", leadingWith: 0),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16, top: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -84,6 +85,7 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
                     } else if (premiumController.imageFreeCount.value <= 0) {
                       premiumController.openPremiumDialog();
                     } else {
+                      await AkAdsPlugin().callInterstitialAds();
                       premiumController.useCount(useType: FreeCount.imageFreeCount);
                       AnalyticsService().logEvent("ImageGenerate", {"image_prompt": promptController.text});
 
@@ -121,7 +123,7 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: PreBannerAd(),
+              child: BannerView(),
             ),
             Expanded(
               child: Obx(() {
@@ -134,7 +136,7 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
                   ));
                 } else {
                   return GridView.builder(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    padding: const EdgeInsets.only(top: 10, bottom: 5),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 16.0, // Adjust spacing between items
@@ -182,19 +184,19 @@ class _ImageGeneratorScreenState extends State<ImageGeneratorScreen> {
 
       final response = await dio.post('https://api.openai.com/v1/images/generations', data: {
         'prompt': prompt,
-        'n': 4,
+        'n': appData.entitlementIsActive.value ? 4 : 2,
         'size': selectedSize,
       });
       if (response.statusCode == 200) {
         DallEImageData data = DallEImageData.fromJson(response.data);
         generatedImages.assignAll(data.data);
       } else {
-        Get.snackbar('Error', 'Failed to generate images.');
+        Get.snackbar('Error', 'Failed to generate images.', colorText: Colors.white);
       }
       Loader.hd();
     } catch (e) {
       Loader.hd();
-      Get.snackbar('Error', 'Something went wrong! please try again later');
+      Get.snackbar('Error', 'Something went wrong! please try again later', colorText: Colors.white);
     }
   }
 }
@@ -253,8 +255,7 @@ class ImageCard extends StatelessWidget {
           child: CachedNetworkImage(
             imageUrl: imageUrl,
             fit: BoxFit.cover,
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                Center(child: CircularProgressIndicator(color: AppColor.primaryClr, value: downloadProgress.progress)),
+            progressIndicatorBuilder: (context, url, downloadProgress) => Center(child: CircularProgressIndicator(color: AppColor.primaryClr, value: downloadProgress.progress)),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
         ),

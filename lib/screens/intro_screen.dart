@@ -4,6 +4,7 @@ import 'package:fl_app/res/assets_path.dart';
 import 'package:fl_app/utils/size_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'dart:async';
 
 import '../controller/analytics_controller.dart';
@@ -28,6 +29,9 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   void initState() {
     super.initState();
+    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+      print("Accepted permission: $accepted");
+    });
     _pageController.addListener(_onPageViewScroll);
     _currentPageStreamController.add(_pageController.initialPage);
   }

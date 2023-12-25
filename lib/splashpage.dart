@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:ak_ads_plugin/ak_ads_plugin.dart';
 import 'package:fl_app/ads/call_ads.dart';
 import 'package:fl_app/controller/auth_controller.dart';
 import 'package:fl_app/controller/setiing_controller.dart';
@@ -16,6 +17,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'InApp Purchase/singletons_data.dart';
 import 'ads/rewarded_ad.dart';
 import 'controller/home_controller.dart';
 import 'utils/size_utils.dart';
@@ -117,16 +119,14 @@ class _SplashPageState extends State<SplashPage> {
 
   Future<void> startTimeOut() async {
     await rewardedAdController.getAdsData();
-    if (Platform.isAndroid) await CallAds().getApiResponse();
+    if (Platform.isAndroid) await CallAds().getApiResponse(adShow: !appData.entitlementIsActive.value);
     GetStorage storage = GetStorage();
     bool? newUser = storage.read("new_user");
     if (newUser == null) {
       storage.write("new_user", false);
     }
-    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-      print("Accepted permission: $accepted");
-    });
-    Future.delayed(Duration(seconds: adsModel.adsShow == true ? 1 : 3), () {
+
+    Future.delayed(Duration(seconds: adsModel.aPPSETTINGS!.appAdShowStatus == "1" ? 1 : 3), () {
       Navigation.replace(authController.user.value.uid.isNotEmpty
           ? Routes.kMainScreen
           : newUser == false

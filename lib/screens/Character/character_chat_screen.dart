@@ -94,10 +94,10 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
           });
         }
       } else {
-        Get.snackbar('Error', 'Failed to create Ai response.');
+        Get.snackbar('Error', 'Failed to create Ai response.',colorText: Colors.white);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Something went wrong! please try again later');
+      Get.snackbar('Error', 'Something went wrong! please try again later',colorText: Colors.white);
     }
   }
 
@@ -227,6 +227,7 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
         ]),
         body: Column(
           children: [
+
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(
@@ -361,7 +362,7 @@ class _CharacterChatScreenState extends State<CharacterChatScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: PreBannerAd(),
+        bottomNavigationBar: BannerView(),
       ),
     );
   }
